@@ -5,20 +5,20 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>SECJUR — Team Baseball Cards</title>
 <style>
-:root{--navy:#0f1f3d;--pink:#e8005a;--violet:#6b2d8b;--light:#f4f6fa;--white:#ffffff;--text:#1a1a2e;--muted:#6b7280;--border:#e5e7eb;--r:14px}
+:root{--navy:#0f1f3d;--pink:#e8005a;--violet:#6b2d8b;--light:#f4f6fa;--white:#fff;--text:#1a1a2e;--muted:#6b7280;--border:#e5e7eb;--r:14px}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--light);color:var(--text);min-height:100vh}
 header{background:var(--navy);padding:2.25rem 2rem 1.75rem;text-align:center;position:relative;overflow:hidden}
 header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(107,45,139,.35) 0%,transparent 60%),radial-gradient(ellipse at 80% 50%,rgba(232,0,90,.2) 0%,transparent 60%);pointer-events:none}
 header h1{color:#fff;font-size:1.9rem;font-weight:800;letter-spacing:-.5px;position:relative}
-header h1 .brand{color:var(--pink)}
+.brand{color:var(--pink)}
 header p{color:rgba(255,255,255,.55);margin-top:.35rem;font-size:.92rem;position:relative}
-.lang-btn{position:absolute;top:1.1rem;right:1.25rem;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:.78rem;font-weight:700;letter-spacing:.5px;padding:.3rem .75rem;border-radius:20px;cursor:pointer;transition:background .15s;z-index:10}
+.lang-btn{position:absolute;top:1.1rem;right:1.25rem;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:.78rem;font-weight:700;padding:.3rem .75rem;border-radius:20px;cursor:pointer;z-index:10}
 .lang-btn:hover{background:rgba(255,255,255,.22)}
 .toolbar{display:flex;gap:.75rem;align-items:center;justify-content:center;flex-wrap:wrap;padding:1.4rem 1.5rem .5rem;max-width:1400px;margin:0 auto}
 .search-wrap{position:relative;flex:1;max-width:340px}
 .search-wrap svg{position:absolute;left:.75rem;top:50%;transform:translateY(-50%);opacity:.4;pointer-events:none}
-.search-wrap input{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:.55rem .9rem .55rem 2.25rem;font-size:.9rem;outline:none;background:var(--white);transition:border-color .2s}
+.search-wrap input{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:.55rem .9rem .55rem 2.25rem;font-size:.9rem;outline:none;background:var(--white)}
 .search-wrap input:focus{border-color:var(--pink)}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:1.25rem;padding:1rem 1.5rem 6rem;max-width:1400px;margin:0 auto}
 .card{background:var(--white);border-radius:var(--r);overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.07);transition:transform .2s,box-shadow .2s;display:flex;flex-direction:column}
@@ -27,7 +27,7 @@ header p{color:rgba(255,255,255,.55);margin-top:.35rem;font-size:.92rem;position
 .card-body{padding:1.25rem;flex:1;display:flex;flex-direction:column;gap:.85rem}
 .card-header{display:flex;align-items:center;gap:.9rem}
 .avatar,.avatar-ph{width:58px;height:58px;border-radius:50%;flex-shrink:0}
-.avatar{object-fit:cover;border:2.5px solid var(--border);background:var(--light)}
+.avatar{object-fit:cover;border:2.5px solid var(--border)}
 .avatar-ph{background:linear-gradient(135deg,var(--navy),var(--violet));display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.3rem;font-weight:700}
 .card-name h2{font-size:1rem;font-weight:700;line-height:1.25}
 .dept-badge{display:inline-block;margin-top:.25rem;background:color-mix(in srgb,var(--violet) 11%,transparent);color:var(--violet);font-size:.68rem;font-weight:700;padding:.18rem .55rem;border-radius:20px;text-transform:uppercase;letter-spacing:.6px}
@@ -36,150 +36,234 @@ header p{color:rgba(255,255,255,.55);margin-top:.35rem;font-size:.92rem;position
 .tag{background:var(--light);border:1px solid var(--border);border-radius:6px;font-size:.78rem;padding:.18rem .5rem}
 .tag.hl{background:color-mix(in srgb,var(--pink) 9%,transparent);border-color:color-mix(in srgb,var(--pink) 28%,transparent);color:var(--pink);font-weight:600}
 .state{grid-column:1/-1;text-align:center;padding:4rem 1rem;color:var(--muted)}
-.fab{position:fixed;bottom:2rem;right:2rem;z-index:100;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--pink),var(--violet));color:#fff;font-size:1.8rem;border:none;cursor:pointer;box-shadow:0 4px 18px rgba(232,0,90,.45);display:flex;align-items:center;justify-content:center;transition:transform .15s,box-shadow .15s}
-.fab:hover{transform:scale(1.08);box-shadow:0 6px 24px rgba(232,0,90,.55)}
+.fab{position:fixed;bottom:2rem;right:2rem;z-index:100;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--pink),var(--violet));color:#fff;font-size:1.8rem;border:none;cursor:pointer;box-shadow:0 4px 18px rgba(232,0,90,.45);display:flex;align-items:center;justify-content:center;transition:transform .15s}
+.fab:hover{transform:scale(1.08)}
 .overlay{position:fixed;inset:0;background:rgba(10,15,30,.55);backdrop-filter:blur(3px);display:none;align-items:flex-start;justify-content:center;z-index:200;padding:1.5rem 1rem;overflow-y:auto}
 .overlay.open{display:flex}
-.modal{background:var(--white);border-radius:20px;width:100%;max-width:880px;box-shadow:0 20px 60px rgba(0,0,0,.25);overflow:hidden;animation:up .22s ease}
-@keyframes up{from{opacity:0;transform:translateY(24px)}}
+.modal{background:var(--white);border-radius:20px;width:100%;max-width:880px;box-shadow:0 20px 60px rgba(0,0,0,.25);overflow:hidden}
 .modal-header{background:var(--navy);padding:1.2rem 1.5rem;display:flex;align-items:center;justify-content:space-between}
 .modal-header h2{color:#fff;font-size:1.05rem;font-weight:700}
 .modal-header h2 span{color:var(--pink)}
-.close-btn{background:rgba(255,255,255,.12);border:none;color:#fff;width:32px;height:32px;border-radius:50%;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s}
-.close-btn:hover{background:rgba(255,255,255,.22)}
+.close-btn{background:rgba(255,255,255,.12);border:none;color:#fff;width:32px;height:32px;border-radius:50%;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .modal-body{display:grid;grid-template-columns:1fr 1fr}
 @media(max-width:620px){.modal-body{grid-template-columns:1fr}}
 .form-side{padding:1.5rem;border-right:1px solid var(--border)}
 .form-side h3{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:1rem}
 .field{margin-bottom:1rem}
 .field label{display:block;font-size:.82rem;font-weight:600;margin-bottom:.3rem}
-.field input,.field textarea{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:.5rem .75rem;font-size:.88rem;outline:none;font-family:inherit;transition:border-color .2s;resize:none}
+.field input,.field textarea{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:.5rem .75rem;font-size:.88rem;outline:none;font-family:inherit;resize:none}
 .field input:focus,.field textarea:focus{border-color:var(--pink)}
 .field .hint{font-size:.72rem;color:var(--muted);margin-top:.22rem}
 .preview-side{padding:1.5rem;background:var(--light);display:flex;flex-direction:column;gap:1rem}
 .preview-side h3{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted)}
 .json-block{background:var(--navy);border-radius:10px;overflow:hidden}
 .json-block-header{display:flex;align-items:center;justify-content:space-between;padding:.5rem .8rem;border-bottom:1px solid rgba(255,255,255,.08)}
-.json-block-header span{font-size:.7rem;font-weight:600;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.5px}
-.copy-btn{background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.7);font-size:.75rem;font-weight:600;padding:.25rem .65rem;border-radius:5px;cursor:pointer;transition:background .15s}
-.copy-btn:hover{background:rgba(255,255,255,.18)}
+.json-block-header span{font-size:.7rem;font-weight:600;color:rgba(255,255,255,.4);text-transform:uppercase}
+.copy-btn{background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.7);font-size:.75rem;font-weight:600;padding:.25rem .65rem;border-radius:5px;cursor:pointer}
 .copy-btn.copied{background:rgba(52,211,153,.25);color:#6ee7b7}
-#json-out{font-family:'Consolas','Courier New',monospace;font-size:.73rem;color:#a5f3c4;padding:.75rem .9rem;white-space:pre;overflow-x:auto;max-height:160px;line-height:1.5}
+#json-out{font-family:monospace;font-size:.73rem;color:#a5f3c4;padding:.75rem .9rem;white-space:pre;overflow-x:auto;max-height:160px;line-height:1.5}
 .steps{display:flex;flex-direction:column;gap:.5rem}
 .step{display:flex;align-items:flex-start;gap:.6rem;font-size:.81rem}
 .step-num{width:21px;height:21px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--pink),var(--violet));color:#fff;font-size:.7rem;font-weight:700;display:flex;align-items:center;justify-content:center}
 .step a{color:var(--violet);font-weight:600;text-decoration:none}
-.step a:hover{text-decoration:underline}
 footer{text-align:center;padding:1.5rem;color:var(--muted);font-size:.8rem}
 </style>
 </head>
 <body>
 <header>
   <button class="lang-btn" onclick="toggleLang()" id="lang-btn">EN</button>
-  <h1><span class="brand">SECJUR</span> &mdash; <span data-i18n="title">Mitarbeiter Baseball Cards</span></h1>
-  <p data-i18n="subtitle">Wer macht was? Alle Kolleginnen und Kollegen auf einen Blick.</p>
+  <h1><span class="brand">SECJUR</span> &#8212; <span id="h-title">Mitarbeiter Baseball Cards</span></h1>
+  <p id="h-sub">Wer macht was? Alle Kolleginnen und Kollegen auf einen Blick.</p>
 </header>
 <div class="toolbar">
   <div class="search-wrap">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-    <input type="text" id="search" data-i18n-placeholder="searchPlaceholder" placeholder="Name, Team oder Thema &hellip;" oninput="filterCards()"/>
+    <input type="text" id="search" placeholder="Name, Team oder Thema ..." oninput="filterCards()"/>
   </div>
 </div>
-<div class="grid" id="grid"><div class="state" data-i18n="loading">Lade Cards &hellip;</div></div>
-<footer data-i18n="footerHint">Klicke auf <strong>+</strong> um deine eigene Card hinzuzuf&uuml;gen.</footer>
-<button class="fab" onclick="openModal()" title="Card hinzuf&uuml;gen">+</button>
-<div class="overlay" id="overlay" onclick="overlayClick(event)">
+<div class="grid" id="grid"><div class="state">Lade Cards ...</div></div>
+<footer id="footer-hint">Klicke auf <strong>+</strong> um deine eigene Card hinzuzuf&#252;gen.</footer>
+<button class="fab" onclick="openModal()" title="Card hinzuf&#252;gen">+</button>
+<div class="overlay" id="overlay" onclick="if(event.target===this)closeModal()">
   <div class="modal">
     <div class="modal-header">
-      <h2 data-i18n="modalTitle">Deine <span>Baseball Card</span> erstellen</h2>
-      <button class="close-btn" onclick="closeModal()">&times;</button>
+      <h2 id="modal-title">Deine <span>Baseball Card</span> erstellen</h2>
+      <button class="close-btn" onclick="closeModal()">&#x2715;</button>
     </div>
     <div class="modal-body">
       <div class="form-side">
-        <h3 data-i18n="formTitle">Deine Daten</h3>
-        <div class="field"><label data-i18n="labelName">Name *</label><input id="f-name" type="text" placeholder="Vorname Nachname" oninput="updatePreview()"/></div>
-        <div class="field"><label data-i18n="labelPhoto">Foto-URL</label><input id="f-photo" type="url" placeholder="https://github.com/username.png" oninput="updatePreview()"/><div class="hint" data-i18n="hintPhoto">Tipp: github.com/USERNAME.png</div></div>
-        <div class="field"><label data-i18n="labelDept">Team / Department *</label><input id="f-dept" type="text" placeholder="z.B. Customer Success" oninput="updatePreview()"/></div>
-        <div class="field"><label data-i18n="labelTasks">Aufgaben *</label><textarea id="f-tasks" rows="3" placeholder="Eine Aufgabe pro Zeile" oninput="updatePreview()"></textarea></div>
-        <div class="field"><label data-i18n="labelContact">Ansprechpartner f&uuml;r *</label><textarea id="f-contact" rows="3" placeholder="Ein Thema pro Zeile" oninput="updatePreview()"></textarea></div>
+        <h3 id="form-title">Deine Daten</h3>
+        <div class="field"><label id="l-name">Name *</label><input id="f-name" type="text" placeholder="Vorname Nachname" oninput="updatePreview()"/></div>
+        <div class="field"><label id="l-photo">Foto-URL</label><input id="f-photo" type="url" placeholder="https://github.com/username.png" oninput="updatePreview()"/><div class="hint" id="l-hint">Tipp: github.com/USERNAME.png</div></div>
+        <div class="field"><label id="l-dept">Team / Department *</label><input id="f-dept" type="text" placeholder="z.B. Customer Success" oninput="updatePreview()"/></div>
+        <div class="field"><label id="l-tasks">Aufgaben *</label><textarea id="f-tasks" rows="3" placeholder="Eine Aufgabe pro Zeile" oninput="updatePreview()"></textarea></div>
+        <div class="field"><label id="l-contact">Ansprechpartner f&#252;r *</label><textarea id="f-contact" rows="3" placeholder="Ein Thema pro Zeile" oninput="updatePreview()"></textarea></div>
       </div>
       <div class="preview-side">
-        <h3 data-i18n="previewTitle">Vorschau</h3>
+        <h3 id="preview-title">Vorschau</h3>
         <div id="card-preview"></div>
         <div class="json-block">
-          <div class="json-block-header"><span data-i18n="jsonLabel">JSON &mdash; in cards.json einf&uuml;gen</span><button class="copy-btn" id="copy-btn" onclick="copyJson()" data-i18n="copyBtn">Kopieren</button></div>
+          <div class="json-block-header"><span id="json-label">JSON &#8212; in cards.json einf&#252;gen</span><button class="copy-btn" id="copy-btn" onclick="copyJson()">Kopieren</button></div>
           <div id="json-out">{}</div>
         </div>
         <div class="steps">
-          <div class="step"><div class="step-num">1</div><span data-i18n="step1">JSON kopieren</span></div>
-          <div class="step"><div class="step-num">2</div><span><a href="people/cards.json" target="_blank">people/cards.json</a> auf GitHub &rarr; &#9998; Edit</span></div>
-          <div class="step"><div class="step-num">3</div><span data-i18n="step3">Block vor letztem <code>]</code> einf&uuml;gen</span></div>
-          <div class="step"><div class="step-num">4</div><span data-i18n="step4">Commit &rarr; Fertig!</span></div>
+          <div class="step"><div class="step-num">1</div><span id="step1">JSON kopieren (Button oben)</span></div>
+          <div class="step"><div class="step-num">2</div><span><a href="people/cards.json" target="_blank">people/cards.json</a> auf GitHub &#8594; &#9998; Edit</span></div>
+          <div class="step"><div class="step-num">3</div><span id="step3">Block vor letztem ] einf&#252;gen (Komma!)</span></div>
+          <div class="step"><div class="step-num">4</div><span id="step4">Commit &#8594; Fertig!</span></div>
         </div>
       </div>
     </div>
   </div>
 </div>
 <script>
-var T={
-  de:{title:"Mitarbeiter Baseball Cards",subtitle:"Wer macht was? Alle Kolleginnen und Kollegen auf einen Blick.",searchPlaceholder:"Name, Team oder Thema …",loading:"Lade Cards …",footerHint:"Klicke auf <strong>+</strong> um deine eigene Card hinzuzufügen.",modalTitle:"Deine <span>Baseball Card</span> erstellen",formTitle:"Deine Daten",labelName:"Name *",labelPhoto:"Foto-URL",labelDept:"Team / Department *",labelTasks:"Aufgaben *",labelContact:"Ansprechpartner für *",hintPhoto:"Tipp: github.com/USERNAME.png funktioniert immer.",placeholderName:"Vorname Nachname",placeholderDept:"z.B. Customer Success",previewTitle:"Vorschau",jsonLabel:"JSON — in cards.json einfügen",copyBtn:"Kopieren",copied:"Kopiert ✓",step1:"JSON kopieren (Button oben)",step3:"Block vor letztem ] einfügen (Komma!)",step4:"Commit → Fertig!",secTasks:"Aufgaben",secContact:"Ansprechpartner für",emptyState:"Keine Ergebnisse.",defaultName:"Dein Name"},
-  en:{title:"Team Baseball Cards",subtitle:"Who does what? All colleagues at a glance.",searchPlaceholder:"Name, team or topic …",loading:"Loading cards …",footerHint:"Click <strong>+</strong> to add your own card.",modalTitle:"Create your <span>Baseball Card</span>",formTitle:"Your Details",labelName:"Name *",labelPhoto:"Photo URL",labelDept:"Team / Department *",labelTasks:"Responsibilities *",labelContact:"Go-to person for *",hintPhoto:"Tip: github.com/YOUR-USERNAME.png always works.",placeholderName:"First Last",placeholderDept:"e.g. Customer Success",previewTitle:"Preview",jsonLabel:"JSON — paste into cards.json",copyBtn:"Copy",copied:"Copied ✓",step1:"Copy the JSON (button above)",step3:"Paste before last ] (add comma!)",step4:"Commit → Done!",secTasks:"Responsibilities",secContact:"Go-to person for",emptyState:"No results found.",defaultName:"Your Name"}
+var lang = "de";
+var L = {
+  de: {
+    title: "Mitarbeiter Baseball Cards",
+    sub: "Wer macht was? Alle Kolleginnen und Kollegen auf einen Blick.",
+    search: "Name, Team oder Thema ...",
+    footer: "Klicke auf <strong>+</strong> um deine eigene Card hinzuzufügen.",
+    modalTitle: "Deine <span>Baseball Card</span> erstellen",
+    formTitle: "Deine Daten",
+    lName: "Name *", lPhoto: "Foto-URL", lDept: "Team / Department *",
+    lTasks: "Aufgaben *", lContact: "Ansprechpartner für *",
+    hint: "Tipp: github.com/USERNAME.png funktioniert immer.",
+    phName: "Vorname Nachname", phDept: "z.B. Customer Success",
+    previewTitle: "Vorschau",
+    jsonLabel: "JSON — in cards.json einfügen",
+    copyBtn: "Kopieren", copied: "Kopiert ✓",
+    step1: "JSON kopieren (Button oben)",
+    step3: "Block vor letztem ] einfügen (Komma!)",
+    step4: "Commit → Fertig!",
+    secTasks: "Aufgaben", secContact: "Ansprechpartner für",
+    empty: "Keine Ergebnisse.", defName: "Dein Name"
+  },
+  en: {
+    title: "Team Baseball Cards",
+    sub: "Who does what? All colleagues at a glance.",
+    search: "Name, team or topic ...",
+    footer: "Click <strong>+</strong> to add your own card.",
+    modalTitle: "Create your <span>Baseball Card</span>",
+    formTitle: "Your Details",
+    lName: "Name *", lPhoto: "Photo URL", lDept: "Team / Department *",
+    lTasks: "Responsibilities *", lContact: "Go-to person for *",
+    hint: "Tip: github.com/YOUR-USERNAME.png always works.",
+    phName: "First Last", phDept: "e.g. Customer Success",
+    previewTitle: "Preview",
+    jsonLabel: "JSON — paste into cards.json",
+    copyBtn: "Copy", copied: "Copied ✓",
+    step1: "Copy the JSON (button above)",
+    step3: "Paste before last ] (add comma!)",
+    step4: "Commit → Done!",
+    secTasks: "Responsibilities", secContact: "Go-to person for",
+    empty: "No results found.", defName: "Your Name"
+  }
 };
-var lang="de";
-function t(k){return T[lang][k]||k;}
-function applyLang(){
-  document.documentElement.lang=lang;
-  document.getElementById("lang-btn").textContent=lang==="de"?"EN":"DE";
-  document.querySelectorAll("[data-i18n]").forEach(function(el){var k=el.getAttribute("data-i18n");if(T[lang][k]!==undefined)el.innerHTML=T[lang][k];});
-  document.querySelectorAll("[data-i18n-placeholder]").forEach(function(el){var k=el.getAttribute("data-i18n-placeholder");if(T[lang][k]!==undefined)el.placeholder=T[lang][k];});
-  filterCards();updatePreview();
+function t(k) { return L[lang][k] || k; }
+function applyLang() {
+  document.documentElement.lang = lang;
+  document.getElementById("lang-btn").textContent = lang === "de" ? "EN" : "DE";
+  document.getElementById("h-title").textContent = t("title");
+  document.getElementById("h-sub").textContent = t("sub");
+  document.getElementById("search").placeholder = t("search");
+  document.getElementById("footer-hint").innerHTML = t("footer");
+  document.getElementById("modal-title").innerHTML = t("modalTitle");
+  document.getElementById("form-title").textContent = t("formTitle");
+  document.getElementById("l-name").textContent = t("lName");
+  document.getElementById("l-photo").textContent = t("lPhoto");
+  document.getElementById("l-hint").textContent = t("hint");
+  document.getElementById("l-dept").textContent = t("lDept");
+  document.getElementById("l-tasks").textContent = t("lTasks");
+  document.getElementById("l-contact").textContent = t("lContact");
+  document.getElementById("f-name").placeholder = t("phName");
+  document.getElementById("f-dept").placeholder = t("phDept");
+  document.getElementById("preview-title").textContent = t("previewTitle");
+  document.getElementById("json-label").textContent = t("jsonLabel");
+  document.getElementById("copy-btn").textContent = t("copyBtn");
+  document.getElementById("step1").textContent = t("step1");
+  document.getElementById("step3").textContent = t("step3");
+  document.getElementById("step4").textContent = t("step4");
+  filterCards();
+  updatePreview();
 }
-function toggleLang(){lang=lang==="de"?"en":"de";applyLang();}
-var allCards=[];
-function loadCards(){
-  fetch("people/cards.json").then(function(r){if(!r.ok)throw new Error();return r.json();}).then(function(data){
-    allCards=data.sort(function(a,b){return a.name.localeCompare(b.name,"de");});
-    renderCards(allCards);
-  }).catch(function(){document.getElementById("grid").innerHTML="<div class='state'>Konnte people/cards.json nicht laden.</div>";});
+function toggleLang() { lang = lang === "de" ? "en" : "de"; applyLang(); }
+var allCards = [];
+function loadCards() {
+  fetch("people/cards.json")
+    .then(function(r) { if (!r.ok) throw new Error(); return r.json(); })
+    .then(function(data) {
+      allCards = data.sort(function(a, b) { return a.name.localeCompare(b.name, "de"); });
+      renderCards(allCards);
+    })
+    .catch(function() {
+      document.getElementById("grid").innerHTML = "<div class='state'>Konnte people/cards.json nicht laden.</div>";
+    });
 }
-function initials(n){return(n||"?").split(" ").map(function(p){return p[0];}).slice(0,2).join("").toUpperCase();}
-function buildCardHTML(c){
-  var photo=c.photo?"<img class='avatar' src='"+c.photo+"' alt='"+(c.name||"")+"'/>" : "<div class='avatar-ph'>"+initials(c.name)+"</div>";
-  var tasks=(c.aufgaben||[]).map(function(x){return "<span class='tag'>"+x+"</span>";}).join("");
-  var contact=(c.ansprechpartner_fuer||[]).map(function(x){return "<span class='tag hl'>"+x+"</span>";}).join("");
-  return "<div class='card'><div class='card-stripe'></div><div class='card-body'><div class='card-header'>"+photo+"<div class='card-name'><h2>"+(c.name||"—")+"</h2><span class='dept-badge'>"+(c.department||"")+"</span></div></div>"+(tasks?"<div><div class='sec-label'>"+t("secTasks")+"</div><div class='tags'>"+tasks+"</div></div>":"")+(contact?"<div><div class='sec-label'>"+t("secContact")+"</div><div class='tags'>"+contact+"</div></div>":"")+"</div></div>";
+function ini(n) {
+  return (n || "?").split(" ").map(function(p) { return p[0]; }).slice(0, 2).join("").toUpperCase();
 }
-function renderCards(cards){
-  var g=document.getElementById("grid");
-  if(!cards.length){g.innerHTML="<div class='state'>"+t("emptyState")+"</div>";return;}
-  g.innerHTML=cards.map(buildCardHTML).join("");
+function buildCard(c) {
+  var ph = "<div class='avatar-ph'>" + ini(c.name) + "</div>";
+  var photo = c.photo ? "<img class='avatar' src='" + c.photo + "' alt='" + (c.name || "") + "'/>" : ph;
+  var tasks = (c.aufgaben || []).map(function(x) { return "<span class='tag'>" + x + "</span>"; }).join("");
+  var contact = (c.ansprechpartner_fuer || []).map(function(x) { return "<span class='tag hl'>" + x + "</span>"; }).join("");
+  return "<div class='card'><div class='card-stripe'></div><div class='card-body'>" +
+    "<div class='card-header'>" + photo +
+    "<div class='card-name'><h2>" + (c.name || "—") + "</h2>" +
+    "<span class='dept-badge'>" + (c.department || "") + "</span></div></div>" +
+    (tasks ? "<div><div class='sec-label'>" + t("secTasks") + "</div><div class='tags'>" + tasks + "</div></div>" : "") +
+    (contact ? "<div><div class='sec-label'>" + t("secContact") + "</div><div class='tags'>" + contact + "</div></div>" : "") +
+    "</div></div>";
 }
-function filterCards(){
-  var q=(document.getElementById("search").value||"").toLowerCase();
-  if(!q){renderCards(allCards);return;}
-  renderCards(allCards.filter(function(c){
-    var h=[c.name,c.department].concat(c.aufgaben||[]).concat(c.ansprechpartner_fuer||[]).join(" ").toLowerCase();
-    return h.indexOf(q)>-1;
+function renderCards(cards) {
+  var g = document.getElementById("grid");
+  if (!cards.length) { g.innerHTML = "<div class='state'>" + t("empty") + "</div>"; return; }
+  g.innerHTML = cards.map(buildCard).join("");
+}
+function filterCards() {
+  var q = (document.getElementById("search").value || "").toLowerCase();
+  if (!q) { renderCards(allCards); return; }
+  renderCards(allCards.filter(function(c) {
+    return [c.name, c.department].concat(c.aufgaben || []).concat(c.ansprechpartner_fuer || []).join(" ").toLowerCase().indexOf(q) > -1;
   }));
 }
-function openModal(){document.getElementById("overlay").classList.add("open");document.body.style.overflow="hidden";updatePreview();}
-function closeModal(){document.getElementById("overlay").classList.remove("open");document.body.style.overflow="";}
-function overlayClick(e){if(e.target===document.getElementById("overlay"))closeModal();}
-function lines(id){return document.getElementById(id).value.split("\n").map(function(l){return l.trim();}).filter(Boolean);}
-function updatePreview(){
-  var c={name:document.getElementById("f-name").value.trim()||t("defaultName"),photo:document.getElementById("f-photo").value.trim(),department:document.getElementById("f-dept").value.trim()||"Team",aufgaben:lines("f-tasks"),ansprechpartner_fuer:lines("f-contact")};
-  document.getElementById("card-preview").innerHTML=buildCardHTML(c);
-  document.getElementById("json-out").textContent=JSON.stringify({name:c.name,photo:c.photo,department:c.department,aufgaben:c.aufgaben,ansprechpartner_fuer:c.ansprechpartner_fuer},null,2);
-  var btn=document.getElementById("copy-btn");btn.textContent=t("copyBtn");btn.classList.remove("copied");
+function openModal() { document.getElementById("overlay").classList.add("open"); document.body.style.overflow = "hidden"; updatePreview(); }
+function closeModal() { document.getElementById("overlay").classList.remove("open"); document.body.style.overflow = ""; }
+function getLines(id) {
+  return document.getElementById(id).value.split("\n").map(function(l) { return l.trim(); }).filter(Boolean);
 }
-function copyJson(){
-  navigator.clipboard.writeText(document.getElementById("json-out").textContent).then(function(){
-    var btn=document.getElementById("copy-btn");btn.textContent=t("copied");btn.classList.add("copied");
-    setTimeout(function(){btn.textContent=t("copyBtn");btn.classList.remove("copied");},2000);
+function updatePreview() {
+  var c = {
+    name: document.getElementById("f-name").value.trim() || t("defName"),
+    photo: document.getElementById("f-photo").value.trim(),
+    department: document.getElementById("f-dept").value.trim() || "Team",
+    aufgaben: getLines("f-tasks"),
+    ansprechpartner_fuer: getLines("f-contact")
+  };
+  document.getElementById("card-preview").innerHTML = buildCard(c);
+  document.getElementById("json-out").textContent = JSON.stringify({ name: c.name, photo: c.photo, department: c.department, aufgaben: c.aufgaben, ansprechpartner_fuer: c.ansprechpartner_fuer }, null, 2);
+  document.getElementById("copy-btn").textContent = t("copyBtn");
+  document.getElementById("copy-btn").classList.remove("copied");
+}
+function copyJson() {
+  navigator.clipboard.writeText(document.getElementById("json-out").textContent).then(function() {
+    var btn = document.getElementById("copy-btn");
+    btn.textContent = t("copied");
+    btn.classList.add("copied");
+    setTimeout(function() { btn.textContent = t("copyBtn"); btn.classList.remove("copied"); }, 2000);
   });
 }
-document.addEventListener("error",function(e){if(e.target.className==="avatar"){var d=document.createElement("div");d.className="avatar-ph";d.textContent=(e.target.alt||"?").split(" ").map(function(p){return p[0];}).slice(0,2).join("").toUpperCase();if(e.target.parentNode)e.target.parentNode.replaceChild(d,e.target);}},true);
-loadCards();updatePreview();
+document.addEventListener("error", function(e) {
+  if (e.target && e.target.className === "avatar") {
+    var d = document.createElement("div");
+    d.className = "avatar-ph";
+    d.textContent = ini(e.target.alt || "");
+    if (e.target.parentNode) e.target.parentNode.replaceChild(d, e.target);
+  }
+}, true);
+loadCards();
+updatePreview();
 </script>
 </body>
 </html>
