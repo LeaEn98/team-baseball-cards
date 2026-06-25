@@ -144,7 +144,7 @@ function loadCards(){
 }
 function initials(n){return(n||"?").split(" ").map(function(p){return p[0];}).slice(0,2).join("").toUpperCase();}
 function buildCardHTML(c){
-  var photo=c.photo?"<img class='avatar' src='"+c.photo+"' alt='"+c.name+"' onerror="this.outerHTML='<div class=\'avatar-ph\'>"+initials(c.name)+"</div>'" />":"<div class='avatar-ph'>"+initials(c.name)+"</div>";
+  var photo=c.photo?"<img class='avatar' src='"+c.photo+"' alt='"+(c.name||"")+"'/>" : "<div class='avatar-ph'>"+initials(c.name)+"</div>";
   var tasks=(c.aufgaben||[]).map(function(x){return "<span class='tag'>"+x+"</span>";}).join("");
   var contact=(c.ansprechpartner_fuer||[]).map(function(x){return "<span class='tag hl'>"+x+"</span>";}).join("");
   return "<div class='card'><div class='card-stripe'></div><div class='card-body'><div class='card-header'>"+photo+"<div class='card-name'><h2>"+(c.name||"—")+"</h2><span class='dept-badge'>"+(c.department||"")+"</span></div></div>"+(tasks?"<div><div class='sec-label'>"+t("secTasks")+"</div><div class='tags'>"+tasks+"</div></div>":"")+(contact?"<div><div class='sec-label'>"+t("secContact")+"</div><div class='tags'>"+contact+"</div></div>":"")+"</div></div>";
@@ -178,6 +178,7 @@ function copyJson(){
     setTimeout(function(){btn.textContent=t("copyBtn");btn.classList.remove("copied");},2000);
   });
 }
+document.addEventListener("error",function(e){if(e.target.className==="avatar"){var d=document.createElement("div");d.className="avatar-ph";d.textContent=(e.target.alt||"?").split(" ").map(function(p){return p[0];}).slice(0,2).join("").toUpperCase();if(e.target.parentNode)e.target.parentNode.replaceChild(d,e.target);}},true);
 loadCards();updatePreview();
 </script>
 </body>
