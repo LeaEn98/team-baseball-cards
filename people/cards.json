@@ -3,21 +3,16 @@
     "name": "Lea Engelbogen",
     "photo": "",
     "department": "Customer Success",
-    "aufgaben": ["Kundenbetreuung","Onboarding neuer Kunden","Renewal Management","Health Check Gespräche"],
-    "ansprechpartner_fuer": ["ISO 27001 Navigator","NIS-2 Onboarding","DCO Plattform"]
-  },
-  {
-    "name": "Max Mustermann",
-    "photo": "",
-    "department": "Product",
-    "aufgaben": ["Feature-Planung","Roadmap-Priorisierung","Stakeholder-Abstimmung","User Story Writing"],
-    "ansprechpartner_fuer": ["DCO Feature-Anfragen","Produktfeedback","Release-Planung"]
-  },
-  {
-    "name": "Anna Beispiel",
-    "photo": "",
-    "department": "Compliance Consulting",
-    "aufgaben": ["DSGVO-Beratung","Datenschutz-Audits","AVV-Reviews","Schulungen"],
-    "ansprechpartner_fuer": ["DSGVO / Datenschutz","AVV-Prüfung","Betroffenenrechte"]
+    "aufgaben": [
+      "Kundenbetreuung",
+      "Onboarding neuer Kunden",
+      "Renewal Management",
+      "Health Check Gespräche"
+    ],
+    "ansprechpartner_fuer": [
+      "ISO 27001 Navigator",
+      "NIS-2 Onboarding",
+      "DCO Plattform"
+    ]
   }
 ]
