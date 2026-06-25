@@ -35,6 +35,10 @@ header p{color:rgba(255,255,255,.55);margin-top:.35rem;font-size:.92rem;position
 .tags{display:flex;flex-wrap:wrap;gap:.3rem}
 .tag{background:var(--light);border:1px solid var(--border);border-radius:6px;font-size:.78rem;padding:.18rem .5rem}
 .tag.hl{background:color-mix(in srgb,var(--pink) 9%,transparent);border-color:color-mix(in srgb,var(--pink) 28%,transparent);color:var(--pink);font-weight:600}
+.card-footer{padding:.7rem 1.25rem;border-top:1px solid var(--border);display:flex;justify-content:flex-end}
+.edit-btn{background:none;border:1.5px solid var(--border);color:var(--muted);font-size:.75rem;font-weight:600;padding:.28rem .7rem;border-radius:7px;cursor:pointer;display:flex;align-items:center;gap:.35rem;transition:all .15s}
+.edit-btn:hover{border-color:var(--violet);color:var(--violet);background:color-mix(in srgb,var(--violet) 6%,transparent)}
+.edit-btn svg{width:12px;height:12px}
 .state{grid-column:1/-1;text-align:center;padding:4rem 1rem;color:var(--muted)}
 .fab{position:fixed;bottom:2rem;right:2rem;z-index:100;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--pink),var(--violet));color:#fff;font-size:1.8rem;border:none;cursor:pointer;box-shadow:0 4px 18px rgba(232,0,90,.45);display:flex;align-items:center;justify-content:center;transition:transform .15s}
 .fab:hover{transform:scale(1.08)}
@@ -66,6 +70,9 @@ header p{color:rgba(255,255,255,.55);margin-top:.35rem;font-size:.92rem;position
 .step{display:flex;align-items:flex-start;gap:.6rem;font-size:.81rem}
 .step-num{width:21px;height:21px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--pink),var(--violet));color:#fff;font-size:.7rem;font-weight:700;display:flex;align-items:center;justify-content:center}
 .step a{color:var(--violet);font-weight:600;text-decoration:none}
+.mode-badge{display:inline-block;font-size:.7rem;font-weight:700;padding:.2rem .55rem;border-radius:20px;margin-left:.5rem;vertical-align:middle}
+.mode-badge.new{background:color-mix(in srgb,var(--pink) 12%,transparent);color:var(--pink);border:1px solid color-mix(in srgb,var(--pink) 28%,transparent)}
+.mode-badge.edit{background:color-mix(in srgb,var(--violet) 12%,transparent);color:var(--violet);border:1px solid color-mix(in srgb,var(--violet) 28%,transparent)}
 footer{text-align:center;padding:1.5rem;color:var(--muted);font-size:.8rem}
 </style>
 </head>
@@ -83,7 +90,7 @@ footer{text-align:center;padding:1.5rem;color:var(--muted);font-size:.8rem}
 </div>
 <div class="grid" id="grid"><div class="state">Lade Cards ...</div></div>
 <footer id="footer-hint">Klicke auf <strong>+</strong> um deine eigene Card hinzuzuf&#252;gen.</footer>
-<button class="fab" onclick="openModal()" title="Card hinzuf&#252;gen">+</button>
+<button class="fab" onclick="openModal(null)" title="Card hinzuf&#252;gen">+</button>
 <div class="overlay" id="overlay" onclick="if(event.target===this)closeModal()">
   <div class="modal">
     <div class="modal-header">
@@ -106,11 +113,17 @@ footer{text-align:center;padding:1.5rem;color:var(--muted);font-size:.8rem}
           <div class="json-block-header"><span id="json-label">JSON &#8212; in cards.json einf&#252;gen</span><button class="copy-btn" id="copy-btn" onclick="copyJson()">Kopieren</button></div>
           <div id="json-out">{}</div>
         </div>
-        <div class="steps">
+        <div class="steps" id="steps-new">
           <div class="step"><div class="step-num">1</div><span id="step1">JSON kopieren (Button oben)</span></div>
           <div class="step"><div class="step-num">2</div><span><a href="people/cards.json" target="_blank">people/cards.json</a> auf GitHub &#8594; &#9998; Edit</span></div>
           <div class="step"><div class="step-num">3</div><span id="step3">Block vor letztem ] einf&#252;gen (Komma!)</span></div>
           <div class="step"><div class="step-num">4</div><span id="step4">Commit &#8594; Fertig!</span></div>
+        </div>
+        <div class="steps" id="steps-edit" style="display:none">
+          <div class="step"><div class="step-num">1</div><span id="step-e1">JSON kopieren (Button oben)</span></div>
+          <div class="step"><div class="step-num">2</div><span><a href="people/cards.json" target="_blank">people/cards.json</a> auf GitHub &#8594; &#9998; Edit</span></div>
+          <div class="step"><div class="step-num">3</div><span id="step-e3">Alten Eintrag durch kopierten JSON ersetzen</span></div>
+          <div class="step"><div class="step-num">4</div><span id="step-e4">Commit &#8594; Fertig!</span></div>
         </div>
       </div>
     </div>
@@ -118,14 +131,18 @@ footer{text-align:center;padding:1.5rem;color:var(--muted);font-size:.8rem}
 </div>
 <script>
 var lang = "de";
+var isEditMode = false;
 var L = {
   de: {
     title: "Mitarbeiter Baseball Cards",
     sub: "Wer macht was? Alle Kolleginnen und Kollegen auf einen Blick.",
     search: "Name, Team oder Thema ...",
     footer: "Klicke auf <strong>+</strong> um deine eigene Card hinzuzufügen.",
-    modalTitle: "Deine <span>Baseball Card</span> erstellen",
-    formTitle: "Deine Daten",
+    modalTitleNew: "Deine <span>Baseball Card</span> erstellen",
+    modalTitleEdit: "Card <span>bearbeiten</span>",
+    formTitleNew: "Deine Daten",
+    formTitleEdit: "Daten bearbeiten",
+    badgeNew: "Neu", badgeEdit: "Bearbeiten",
     lName: "Name *", lPhoto: "Foto-URL", lDept: "Team / Department *",
     lTasks: "Aufgaben *", lContact: "Ansprechpartner für *",
     hint: "Tipp: github.com/USERNAME.png funktioniert immer.",
@@ -136,7 +153,11 @@ var L = {
     step1: "JSON kopieren (Button oben)",
     step3: "Block vor letztem ] einfügen (Komma!)",
     step4: "Commit → Fertig!",
+    stepE1: "JSON kopieren (Button oben)",
+    stepE3: "Alten Eintrag durch kopierten JSON ersetzen",
+    stepE4: "Commit → Fertig!",
     secTasks: "Aufgaben", secContact: "Ansprechpartner für",
+    editBtn: "Bearbeiten",
     empty: "Keine Ergebnisse.", defName: "Dein Name"
   },
   en: {
@@ -144,8 +165,11 @@ var L = {
     sub: "Who does what? All colleagues at a glance.",
     search: "Name, team or topic ...",
     footer: "Click <strong>+</strong> to add your own card.",
-    modalTitle: "Create your <span>Baseball Card</span>",
-    formTitle: "Your Details",
+    modalTitleNew: "Create your <span>Baseball Card</span>",
+    modalTitleEdit: "Edit <span>Card</span>",
+    formTitleNew: "Your Details",
+    formTitleEdit: "Edit Details",
+    badgeNew: "New", badgeEdit: "Edit",
     lName: "Name *", lPhoto: "Photo URL", lDept: "Team / Department *",
     lTasks: "Responsibilities *", lContact: "Go-to person for *",
     hint: "Tip: github.com/YOUR-USERNAME.png always works.",
@@ -156,7 +180,11 @@ var L = {
     step1: "Copy the JSON (button above)",
     step3: "Paste before last ] (add comma!)",
     step4: "Commit → Done!",
+    stepE1: "Copy the JSON (button above)",
+    stepE3: "Replace old entry with the copied JSON",
+    stepE4: "Commit → Done!",
     secTasks: "Responsibilities", secContact: "Go-to person for",
+    editBtn: "Edit",
     empty: "No results found.", defName: "Your Name"
   }
 };
@@ -168,8 +196,6 @@ function applyLang() {
   document.getElementById("h-sub").textContent = t("sub");
   document.getElementById("search").placeholder = t("search");
   document.getElementById("footer-hint").innerHTML = t("footer");
-  document.getElementById("modal-title").innerHTML = t("modalTitle");
-  document.getElementById("form-title").textContent = t("formTitle");
   document.getElementById("l-name").textContent = t("lName");
   document.getElementById("l-photo").textContent = t("lPhoto");
   document.getElementById("l-hint").textContent = t("hint");
@@ -184,10 +210,21 @@ function applyLang() {
   document.getElementById("step1").textContent = t("step1");
   document.getElementById("step3").textContent = t("step3");
   document.getElementById("step4").textContent = t("step4");
+  document.getElementById("step-e1").textContent = t("stepE1");
+  document.getElementById("step-e3").textContent = t("stepE3");
+  document.getElementById("step-e4").textContent = t("stepE4");
+  setModalMode(isEditMode);
   filterCards();
   updatePreview();
 }
 function toggleLang() { lang = lang === "de" ? "en" : "de"; applyLang(); }
+function setModalMode(editMode) {
+  isEditMode = editMode;
+  document.getElementById("modal-title").innerHTML = editMode ? t("modalTitleEdit") : t("modalTitleNew");
+  document.getElementById("form-title").textContent = editMode ? t("formTitleEdit") : t("formTitleNew");
+  document.getElementById("steps-new").style.display = editMode ? "none" : "flex";
+  document.getElementById("steps-edit").style.display = editMode ? "flex" : "none";
+}
 var allCards = [];
 function loadCards() {
   fetch("people/cards.json")
@@ -203,23 +240,32 @@ function loadCards() {
 function ini(n) {
   return (n || "?").split(" ").map(function(p) { return p[0]; }).slice(0, 2).join("").toUpperCase();
 }
-function buildCard(c) {
+var PENCIL_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
+function buildCard(c, idx) {
   var ph = "<div class='avatar-ph'>" + ini(c.name) + "</div>";
   var photo = c.photo ? "<img class='avatar' src='" + c.photo + "' alt='" + (c.name || "") + "'/>" : ph;
   var tasks = (c.aufgaben || []).map(function(x) { return "<span class='tag'>" + x + "</span>"; }).join("");
   var contact = (c.ansprechpartner_fuer || []).map(function(x) { return "<span class='tag hl'>" + x + "</span>"; }).join("");
-  return "<div class='card'><div class='card-stripe'></div><div class='card-body'>" +
+  var idxAttr = (idx !== undefined) ? " data-idx='" + idx + "'" : "";
+  return "<div class='card'>" +
+    "<div class='card-stripe'></div>" +
+    "<div class='card-body'>" +
     "<div class='card-header'>" + photo +
     "<div class='card-name'><h2>" + (c.name || "—") + "</h2>" +
     "<span class='dept-badge'>" + (c.department || "") + "</span></div></div>" +
     (tasks ? "<div><div class='sec-label'>" + t("secTasks") + "</div><div class='tags'>" + tasks + "</div></div>" : "") +
     (contact ? "<div><div class='sec-label'>" + t("secContact") + "</div><div class='tags'>" + contact + "</div></div>" : "") +
-    "</div></div>";
+    "</div>" +
+    "<div class='card-footer'>" +
+    "<button class='edit-btn'" + idxAttr + " onclick='openModal(allCards[" + idx + "])'>" +
+    PENCIL_SVG + "<span>" + t("editBtn") + "</span></button>" +
+    "</div>" +
+    "</div>";
 }
 function renderCards(cards) {
   var g = document.getElementById("grid");
   if (!cards.length) { g.innerHTML = "<div class='state'>" + t("empty") + "</div>"; return; }
-  g.innerHTML = cards.map(buildCard).join("");
+  g.innerHTML = cards.map(function(c, i) { return buildCard(c, allCards.indexOf(c)); }).join("");
 }
 function filterCards() {
   var q = (document.getElementById("search").value || "").toLowerCase();
@@ -228,7 +274,26 @@ function filterCards() {
     return [c.name, c.department].concat(c.aufgaben || []).concat(c.ansprechpartner_fuer || []).join(" ").toLowerCase().indexOf(q) > -1;
   }));
 }
-function openModal() { document.getElementById("overlay").classList.add("open"); document.body.style.overflow = "hidden"; updatePreview(); }
+function openModal(card) {
+  var editMode = !!card;
+  setModalMode(editMode);
+  if (editMode) {
+    document.getElementById("f-name").value = card.name || "";
+    document.getElementById("f-photo").value = card.photo || "";
+    document.getElementById("f-dept").value = card.department || "";
+    document.getElementById("f-tasks").value = (card.aufgaben || []).join("\n");
+    document.getElementById("f-contact").value = (card.ansprechpartner_fuer || []).join("\n");
+  } else {
+    document.getElementById("f-name").value = "";
+    document.getElementById("f-photo").value = "";
+    document.getElementById("f-dept").value = "";
+    document.getElementById("f-tasks").value = "";
+    document.getElementById("f-contact").value = "";
+  }
+  document.getElementById("overlay").classList.add("open");
+  document.body.style.overflow = "hidden";
+  updatePreview();
+}
 function closeModal() { document.getElementById("overlay").classList.remove("open"); document.body.style.overflow = ""; }
 function getLines(id) {
   return document.getElementById(id).value.split("\n").map(function(l) { return l.trim(); }).filter(Boolean);
