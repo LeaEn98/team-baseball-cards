@@ -1,18 +1,21 @@
 [
   {
     "name": "Lea Engelbogen",
-    "photo": "",
-    "department": "Customer Success",
+    "photo": "https://github.com/LeaEn98.png",
+    "department": "People & HR",
     "aufgaben": [
-      "Kundenbetreuung",
-      "Onboarding neuer Kunden",
-      "Renewal Management",
-      "Health Check Gespräche"
+      "Active Sourcing & Recruiting",
+      "Interview-Koordination",
+      "Payroll & Vertragsänderungen",
+      "Personio-Administration",
+      "Team Events & Company Retreat",
+      "Gerätemanagement (Everphone)"
     ],
     "ansprechpartner_fuer": [
-      "ISO 27001 Navigator",
-      "NIS-2 Onboarding",
-      "DCO Plattform"
+      "Recruiting & Bewerbungsprozess",
+      "Payroll & Gehaltsthemen",
+      "HR-Tools (Personio)",
+      "Team Events & Offsites"
     ]
   }
 ]
