@@ -58,6 +58,21 @@ header p{color:rgba(255,255,255,.55);margin-top:.35rem;font-size:.92rem;position
 .field input,.field textarea{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:.5rem .75rem;font-size:.88rem;outline:none;font-family:inherit;resize:none}
 .field input:focus,.field textarea:focus{border-color:var(--pink)}
 .field .hint{font-size:.72rem;color:var(--muted);margin-top:.22rem}
+
+/* Photo drop zone */
+.photo-zone{border:2px dashed var(--border);border-radius:10px;padding:.75rem;text-align:center;cursor:pointer;transition:all .2s;position:relative;background:var(--light)}
+.photo-zone:hover,.photo-zone.drag-over{border-color:var(--violet);background:color-mix(in srgb,var(--violet) 5%,transparent)}
+.photo-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.photo-zone-inner{display:flex;align-items:center;gap:.75rem;pointer-events:none}
+.photo-zone-thumb{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--violet));display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
+.photo-zone-thumb img{width:100%;height:100%;object-fit:cover}
+.photo-zone-thumb svg{width:20px;height:20px;opacity:.6}
+.photo-zone-text{text-align:left}
+.photo-zone-text strong{display:block;font-size:.82rem;color:var(--text)}
+.photo-zone-text span{font-size:.72rem;color:var(--muted)}
+.photo-clear{position:absolute;top:.4rem;right:.4rem;background:rgba(232,0,90,.12);border:none;color:var(--pink);width:20px;height:20px;border-radius:50%;font-size:.75rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:2;pointer-events:all}
+.photo-clear.visible{display:flex}
+
 .preview-side{padding:1.5rem;background:var(--light);display:flex;flex-direction:column;gap:1rem}
 .preview-side h3{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted)}
 .json-block{background:var(--navy);border-radius:10px;overflow:hidden}
@@ -70,9 +85,6 @@ header p{color:rgba(255,255,255,.55);margin-top:.35rem;font-size:.92rem;position
 .step{display:flex;align-items:flex-start;gap:.6rem;font-size:.81rem}
 .step-num{width:21px;height:21px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--pink),var(--violet));color:#fff;font-size:.7rem;font-weight:700;display:flex;align-items:center;justify-content:center}
 .step a{color:var(--violet);font-weight:600;text-decoration:none}
-.mode-badge{display:inline-block;font-size:.7rem;font-weight:700;padding:.2rem .55rem;border-radius:20px;margin-left:.5rem;vertical-align:middle}
-.mode-badge.new{background:color-mix(in srgb,var(--pink) 12%,transparent);color:var(--pink);border:1px solid color-mix(in srgb,var(--pink) 28%,transparent)}
-.mode-badge.edit{background:color-mix(in srgb,var(--violet) 12%,transparent);color:var(--violet);border:1px solid color-mix(in srgb,var(--violet) 28%,transparent)}
 footer{text-align:center;padding:1.5rem;color:var(--muted);font-size:.8rem}
 </style>
 </head>
@@ -91,6 +103,7 @@ footer{text-align:center;padding:1.5rem;color:var(--muted);font-size:.8rem}
 <div class="grid" id="grid"><div class="state">Lade Cards ...</div></div>
 <footer id="footer-hint">Klicke auf <strong>+</strong> um deine eigene Card hinzuzuf&#252;gen.</footer>
 <button class="fab" onclick="openModal(null)" title="Card hinzuf&#252;gen">+</button>
+
 <div class="overlay" id="overlay" onclick="if(event.target===this)closeModal()">
   <div class="modal">
     <div class="modal-header">
@@ -101,7 +114,24 @@ footer{text-align:center;padding:1.5rem;color:var(--muted);font-size:.8rem}
       <div class="form-side">
         <h3 id="form-title">Deine Daten</h3>
         <div class="field"><label id="l-name">Name *</label><input id="f-name" type="text" placeholder="Vorname Nachname" oninput="updatePreview()"/></div>
-        <div class="field"><label id="l-photo">Foto-URL</label><input id="f-photo" type="url" placeholder="https://github.com/username.png" oninput="updatePreview()"/><div class="hint" id="l-hint">Tipp: github.com/USERNAME.png</div></div>
+
+        <div class="field">
+          <label id="l-photo">Foto</label>
+          <div class="photo-zone" id="photo-zone" ondragover="photoDragOver(event)" ondragleave="photoDragLeave(event)" ondrop="photoDrop(event)">
+            <input type="file" accept="image/*" onchange="photoFileChange(event)" id="photo-file-input"/>
+            <button class="photo-clear" id="photo-clear" onclick="photoClear(event)" title="Foto entfernen">&#x2715;</button>
+            <div class="photo-zone-inner">
+              <div class="photo-zone-thumb" id="photo-thumb">
+                <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+              </div>
+              <div class="photo-zone-text">
+                <strong id="photo-zone-main">Foto hier ablegen oder klicken</strong>
+                <span id="photo-zone-sub">JPG, PNG, WEBP &bull; wird automatisch verkleinert</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="field"><label id="l-dept">Team / Department *</label><input id="f-dept" type="text" placeholder="z.B. Customer Success" oninput="updatePreview()"/></div>
         <div class="field"><label id="l-tasks">Aufgaben *</label><textarea id="f-tasks" rows="3" placeholder="Eine Aufgabe pro Zeile" oninput="updatePreview()"></textarea></div>
         <div class="field"><label id="l-contact">Ansprechpartner f&#252;r *</label><textarea id="f-contact" rows="3" placeholder="Ein Thema pro Zeile" oninput="updatePreview()"></textarea></div>
@@ -129,76 +159,58 @@ footer{text-align:center;padding:1.5rem;color:var(--muted);font-size:.8rem}
     </div>
   </div>
 </div>
+
 <script>
 var lang = "de";
 var isEditMode = false;
+var currentPhoto = "";
+
 var L = {
   de: {
-    title: "Mitarbeiter Baseball Cards",
-    sub: "Wer macht was? Alle Kolleginnen und Kollegen auf einen Blick.",
-    search: "Name, Team oder Thema ...",
-    footer: "Klicke auf <strong>+</strong> um deine eigene Card hinzuzufügen.",
-    modalTitleNew: "Deine <span>Baseball Card</span> erstellen",
-    modalTitleEdit: "Card <span>bearbeiten</span>",
-    formTitleNew: "Deine Daten",
-    formTitleEdit: "Daten bearbeiten",
-    badgeNew: "Neu", badgeEdit: "Bearbeiten",
-    lName: "Name *", lPhoto: "Foto-URL", lDept: "Team / Department *",
-    lTasks: "Aufgaben *", lContact: "Ansprechpartner für *",
-    hint: "Tipp: github.com/USERNAME.png funktioniert immer.",
-    phName: "Vorname Nachname", phDept: "z.B. Customer Success",
-    previewTitle: "Vorschau",
-    jsonLabel: "JSON — in cards.json einfügen",
-    copyBtn: "Kopieren", copied: "Kopiert ✓",
-    step1: "JSON kopieren (Button oben)",
-    step3: "Block vor letztem ] einfügen (Komma!)",
-    step4: "Commit → Fertig!",
-    stepE1: "JSON kopieren (Button oben)",
-    stepE3: "Alten Eintrag durch kopierten JSON ersetzen",
-    stepE4: "Commit → Fertig!",
-    secTasks: "Aufgaben", secContact: "Ansprechpartner für",
-    editBtn: "Bearbeiten",
-    empty: "Keine Ergebnisse.", defName: "Dein Name"
+    title:"Mitarbeiter Baseball Cards", sub:"Wer macht was? Alle Kolleginnen und Kollegen auf einen Blick.",
+    search:"Name, Team oder Thema ...", footer:"Klicke auf <strong>+</strong> um deine eigene Card hinzuzufügen.",
+    modalTitleNew:"Deine <span>Baseball Card</span> erstellen", modalTitleEdit:"Card <span>bearbeiten</span>",
+    formTitleNew:"Deine Daten", formTitleEdit:"Daten bearbeiten",
+    lName:"Name *", lPhoto:"Foto", lDept:"Team / Department *", lTasks:"Aufgaben *", lContact:"Ansprechpartner für *",
+    phName:"Vorname Nachname", phDept:"z.B. Customer Success",
+    photoMain:"Foto hier ablegen oder klicken", photoSub:"JPG, PNG, WEBP · wird automatisch verkleinert",
+    photoLoaded:"Foto geladen", photoLoadedSub:"Klicken zum Ändern",
+    previewTitle:"Vorschau", jsonLabel:"JSON — in cards.json einfügen",
+    copyBtn:"Kopieren", copied:"Kopiert ✓",
+    step1:"JSON kopieren (Button oben)", step3:"Block vor letztem ] einfügen (Komma!)", step4:"Commit → Fertig!",
+    stepE1:"JSON kopieren (Button oben)", stepE3:"Alten Eintrag durch kopierten JSON ersetzen", stepE4:"Commit → Fertig!",
+    secTasks:"Aufgaben", secContact:"Ansprechpartner für", editBtn:"Bearbeiten",
+    empty:"Keine Ergebnisse.", defName:"Dein Name"
   },
   en: {
-    title: "Team Baseball Cards",
-    sub: "Who does what? All colleagues at a glance.",
-    search: "Name, team or topic ...",
-    footer: "Click <strong>+</strong> to add your own card.",
-    modalTitleNew: "Create your <span>Baseball Card</span>",
-    modalTitleEdit: "Edit <span>Card</span>",
-    formTitleNew: "Your Details",
-    formTitleEdit: "Edit Details",
-    badgeNew: "New", badgeEdit: "Edit",
-    lName: "Name *", lPhoto: "Photo URL", lDept: "Team / Department *",
-    lTasks: "Responsibilities *", lContact: "Go-to person for *",
-    hint: "Tip: github.com/YOUR-USERNAME.png always works.",
-    phName: "First Last", phDept: "e.g. Customer Success",
-    previewTitle: "Preview",
-    jsonLabel: "JSON — paste into cards.json",
-    copyBtn: "Copy", copied: "Copied ✓",
-    step1: "Copy the JSON (button above)",
-    step3: "Paste before last ] (add comma!)",
-    step4: "Commit → Done!",
-    stepE1: "Copy the JSON (button above)",
-    stepE3: "Replace old entry with the copied JSON",
-    stepE4: "Commit → Done!",
-    secTasks: "Responsibilities", secContact: "Go-to person for",
-    editBtn: "Edit",
-    empty: "No results found.", defName: "Your Name"
+    title:"Team Baseball Cards", sub:"Who does what? All colleagues at a glance.",
+    search:"Name, team or topic ...", footer:"Click <strong>+</strong> to add your own card.",
+    modalTitleNew:"Create your <span>Baseball Card</span>", modalTitleEdit:"Edit <span>Card</span>",
+    formTitleNew:"Your Details", formTitleEdit:"Edit Details",
+    lName:"Name *", lPhoto:"Photo", lDept:"Team / Department *", lTasks:"Responsibilities *", lContact:"Go-to person for *",
+    phName:"First Last", phDept:"e.g. Customer Success",
+    photoMain:"Drop photo here or click", photoSub:"JPG, PNG, WEBP · auto-resized",
+    photoLoaded:"Photo loaded", photoLoadedSub:"Click to change",
+    previewTitle:"Preview", jsonLabel:"JSON — paste into cards.json",
+    copyBtn:"Copy", copied:"Copied ✓",
+    step1:"Copy the JSON (button above)", step3:"Paste before last ] (add comma!)", step4:"Commit → Done!",
+    stepE1:"Copy the JSON (button above)", stepE3:"Replace old entry with the copied JSON", stepE4:"Commit → Done!",
+    secTasks:"Responsibilities", secContact:"Go-to person for", editBtn:"Edit",
+    empty:"No results found.", defName:"Your Name"
   }
 };
-function t(k) { return L[lang][k] || k; }
-function applyLang() {
+
+function t(k){ return L[lang][k] || k; }
+
+function applyLang(){
   document.documentElement.lang = lang;
-  document.getElementById("lang-btn").textContent = lang === "de" ? "EN" : "DE";
+  document.getElementById("lang-btn").textContent = lang==="de"?"EN":"DE";
   document.getElementById("h-title").textContent = t("title");
   document.getElementById("h-sub").textContent = t("sub");
   document.getElementById("search").placeholder = t("search");
   document.getElementById("footer-hint").innerHTML = t("footer");
   document.getElementById("l-name").textContent = t("lName");
   document.getElementById("l-photo").textContent = t("lPhoto");
-  document.getElementById("l-hint").textContent = t("hint");
   document.getElementById("l-dept").textContent = t("lDept");
   document.getElementById("l-tasks").textContent = t("lTasks");
   document.getElementById("l-contact").textContent = t("lContact");
@@ -213,120 +225,197 @@ function applyLang() {
   document.getElementById("step-e1").textContent = t("stepE1");
   document.getElementById("step-e3").textContent = t("stepE3");
   document.getElementById("step-e4").textContent = t("stepE4");
+  updatePhotoZoneText();
   setModalMode(isEditMode);
   filterCards();
   updatePreview();
 }
-function toggleLang() { lang = lang === "de" ? "en" : "de"; applyLang(); }
-function setModalMode(editMode) {
+function toggleLang(){ lang = lang==="de"?"en":"de"; applyLang(); }
+
+function setModalMode(editMode){
   isEditMode = editMode;
   document.getElementById("modal-title").innerHTML = editMode ? t("modalTitleEdit") : t("modalTitleNew");
   document.getElementById("form-title").textContent = editMode ? t("formTitleEdit") : t("formTitleNew");
   document.getElementById("steps-new").style.display = editMode ? "none" : "flex";
   document.getElementById("steps-edit").style.display = editMode ? "flex" : "none";
 }
-var allCards = [];
-function loadCards() {
-  fetch("people/cards.json")
-    .then(function(r) { if (!r.ok) throw new Error(); return r.json(); })
-    .then(function(data) {
-      allCards = data.sort(function(a, b) { return a.name.localeCompare(b.name, "de"); });
-      renderCards(allCards);
-    })
-    .catch(function() {
-      document.getElementById("grid").innerHTML = "<div class='state'>Konnte people/cards.json nicht laden.</div>";
-    });
+
+/* ---- Photo handling ---- */
+function resizeImage(file, cb){
+  var reader = new FileReader();
+  reader.onload = function(e){
+    var img = new Image();
+    img.onload = function(){
+      var size = 200;
+      var canvas = document.createElement("canvas");
+      var sx=0, sy=0, sw=img.width, sh=img.height;
+      if(sw > sh){ sx = Math.floor((sw-sh)/2); sw = sh; } else { sy = Math.floor((sh-sw)/2); sh = sw; }
+      canvas.width = size; canvas.height = size;
+      var ctx = canvas.getContext("2d");
+      ctx.drawImage(img, sx, sy, sw, sh, 0, 0, size, size);
+      cb(canvas.toDataURL("image/jpeg", 0.75));
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
 }
-function ini(n) {
-  return (n || "?").split(" ").map(function(p) { return p[0]; }).slice(0, 2).join("").toUpperCase();
-}
-var PENCIL_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
-function buildCard(c, idx) {
-  var ph = "<div class='avatar-ph'>" + ini(c.name) + "</div>";
-  var photo = c.photo ? "<img class='avatar' src='" + c.photo + "' alt='" + (c.name || "") + "'/>" : ph;
-  var tasks = (c.aufgaben || []).map(function(x) { return "<span class='tag'>" + x + "</span>"; }).join("");
-  var contact = (c.ansprechpartner_fuer || []).map(function(x) { return "<span class='tag hl'>" + x + "</span>"; }).join("");
-  var idxAttr = (idx !== undefined) ? " data-idx='" + idx + "'" : "";
-  return "<div class='card'>" +
-    "<div class='card-stripe'></div>" +
-    "<div class='card-body'>" +
-    "<div class='card-header'>" + photo +
-    "<div class='card-name'><h2>" + (c.name || "—") + "</h2>" +
-    "<span class='dept-badge'>" + (c.department || "") + "</span></div></div>" +
-    (tasks ? "<div><div class='sec-label'>" + t("secTasks") + "</div><div class='tags'>" + tasks + "</div></div>" : "") +
-    (contact ? "<div><div class='sec-label'>" + t("secContact") + "</div><div class='tags'>" + contact + "</div></div>" : "") +
-    "</div>" +
-    "<div class='card-footer'>" +
-    "<button class='edit-btn'" + idxAttr + " onclick='openModal(allCards[" + idx + "])'>" +
-    PENCIL_SVG + "<span>" + t("editBtn") + "</span></button>" +
-    "</div>" +
-    "</div>";
-}
-function renderCards(cards) {
-  var g = document.getElementById("grid");
-  if (!cards.length) { g.innerHTML = "<div class='state'>" + t("empty") + "</div>"; return; }
-  g.innerHTML = cards.map(function(c, i) { return buildCard(c, allCards.indexOf(c)); }).join("");
-}
-function filterCards() {
-  var q = (document.getElementById("search").value || "").toLowerCase();
-  if (!q) { renderCards(allCards); return; }
-  renderCards(allCards.filter(function(c) {
-    return [c.name, c.department].concat(c.aufgaben || []).concat(c.ansprechpartner_fuer || []).join(" ").toLowerCase().indexOf(q) > -1;
-  }));
-}
-function openModal(card) {
-  var editMode = !!card;
-  setModalMode(editMode);
-  if (editMode) {
-    document.getElementById("f-name").value = card.name || "";
-    document.getElementById("f-photo").value = card.photo || "";
-    document.getElementById("f-dept").value = card.department || "";
-    document.getElementById("f-tasks").value = (card.aufgaben || []).join("\n");
-    document.getElementById("f-contact").value = (card.ansprechpartner_fuer || []).join("\n");
-  } else {
-    document.getElementById("f-name").value = "";
-    document.getElementById("f-photo").value = "";
-    document.getElementById("f-dept").value = "";
-    document.getElementById("f-tasks").value = "";
-    document.getElementById("f-contact").value = "";
-  }
-  document.getElementById("overlay").classList.add("open");
-  document.body.style.overflow = "hidden";
+
+function setPhoto(dataUrl){
+  currentPhoto = dataUrl;
+  var thumb = document.getElementById("photo-thumb");
+  thumb.innerHTML = "<img src='" + dataUrl + "' alt='photo'/>";
+  document.getElementById("photo-zone-main").textContent = t("photoLoaded");
+  document.getElementById("photo-zone-sub").textContent = t("photoLoadedSub");
+  document.getElementById("photo-clear").classList.add("visible");
   updatePreview();
 }
-function closeModal() { document.getElementById("overlay").classList.remove("open"); document.body.style.overflow = ""; }
-function getLines(id) {
-  return document.getElementById(id).value.split("\n").map(function(l) { return l.trim(); }).filter(Boolean);
+
+function updatePhotoZoneText(){
+  if(!currentPhoto){
+    document.getElementById("photo-zone-main").textContent = t("photoMain");
+    document.getElementById("photo-zone-sub").textContent = t("photoSub");
+  } else {
+    document.getElementById("photo-zone-main").textContent = t("photoLoaded");
+    document.getElementById("photo-zone-sub").textContent = t("photoLoadedSub");
+  }
 }
-function updatePreview() {
+
+function photoDragOver(e){ e.preventDefault(); document.getElementById("photo-zone").classList.add("drag-over"); }
+function photoDragLeave(e){ document.getElementById("photo-zone").classList.remove("drag-over"); }
+function photoDrop(e){
+  e.preventDefault();
+  document.getElementById("photo-zone").classList.remove("drag-over");
+  var file = e.dataTransfer.files[0];
+  if(file && file.type.startsWith("image/")) resizeImage(file, setPhoto);
+}
+function photoFileChange(e){
+  var file = e.target.files[0];
+  if(file) resizeImage(file, setPhoto);
+}
+function photoClear(e){
+  e.stopPropagation();
+  currentPhoto = "";
+  var thumb = document.getElementById("photo-thumb");
+  thumb.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>';
+  document.getElementById("photo-zone-main").textContent = t("photoMain");
+  document.getElementById("photo-zone-sub").textContent = t("photoSub");
+  document.getElementById("photo-clear").classList.remove("visible");
+  document.getElementById("photo-file-input").value = "";
+  updatePreview();
+}
+
+/* ---- Cards ---- */
+var allCards = [];
+function loadCards(){
+  fetch("people/cards.json")
+    .then(function(r){ if(!r.ok) throw new Error(); return r.json(); })
+    .then(function(data){
+      allCards = data.sort(function(a,b){ return a.name.localeCompare(b.name,"de"); });
+      renderCards(allCards);
+    })
+    .catch(function(){ document.getElementById("grid").innerHTML="<div class='state'>Konnte people/cards.json nicht laden.</div>"; });
+}
+
+function ini(n){ return (n||"?").split(" ").map(function(p){return p[0];}).slice(0,2).join("").toUpperCase(); }
+
+var PENCIL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
+
+function buildCard(c, idx){
+  var ph = "<div class='avatar-ph'>"+ini(c.name)+"</div>";
+  var photo = c.photo ? "<img class='avatar' src='"+c.photo+"' alt='"+(c.name||"")+"'/>" : ph;
+  var tasks = (c.aufgaben||[]).map(function(x){return "<span class='tag'>"+x+"</span>";}).join("");
+  var contact = (c.ansprechpartner_fuer||[]).map(function(x){return "<span class='tag hl'>"+x+"</span>";}).join("");
+  var editCall = (idx!==undefined) ? "openModal(allCards["+idx+"])" : "openModal(null)";
+  return "<div class='card'><div class='card-stripe'></div><div class='card-body'>"+
+    "<div class='card-header'>"+photo+"<div class='card-name'><h2>"+(c.name||"—")+"</h2>"+
+    "<span class='dept-badge'>"+(c.department||"")+"</span></div></div>"+
+    (tasks?"<div><div class='sec-label'>"+t("secTasks")+"</div><div class='tags'>"+tasks+"</div></div>":"")+
+    (contact?"<div><div class='sec-label'>"+t("secContact")+"</div><div class='tags'>"+contact+"</div></div>":"")+
+    "</div><div class='card-footer'>"+
+    "<button class='edit-btn' onclick='"+editCall+"'>"+PENCIL+"<span>"+t("editBtn")+"</span></button>"+
+    "</div></div>";
+}
+
+function renderCards(cards){
+  var g = document.getElementById("grid");
+  if(!cards.length){g.innerHTML="<div class='state'>"+t("empty")+"</div>";return;}
+  g.innerHTML = cards.map(function(c){ return buildCard(c, allCards.indexOf(c)); }).join("");
+}
+function filterCards(){
+  var q = (document.getElementById("search").value||"").toLowerCase();
+  if(!q){renderCards(allCards);return;}
+  renderCards(allCards.filter(function(c){
+    return [c.name,c.department].concat(c.aufgaben||[]).concat(c.ansprechpartner_fuer||[]).join(" ").toLowerCase().indexOf(q)>-1;
+  }));
+}
+
+function openModal(card){
+  var editMode = !!card;
+  setModalMode(editMode);
+  currentPhoto = "";
+  document.getElementById("photo-clear").classList.remove("visible");
+  document.getElementById("photo-file-input").value = "";
+  if(editMode){
+    document.getElementById("f-name").value = card.name||"";
+    document.getElementById("f-dept").value = card.department||"";
+    document.getElementById("f-tasks").value = (card.aufgaben||[]).join("\n");
+    document.getElementById("f-contact").value = (card.ansprechpartner_fuer||[]).join("\n");
+    if(card.photo){
+      currentPhoto = card.photo;
+      var thumb = document.getElementById("photo-thumb");
+      thumb.innerHTML = "<img src='"+card.photo+"' alt='photo'/>";
+      document.getElementById("photo-clear").classList.add("visible");
+    } else {
+      var thumb2 = document.getElementById("photo-thumb");
+      thumb2.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>';
+    }
+  } else {
+    document.getElementById("f-name").value="";
+    document.getElementById("f-dept").value="";
+    document.getElementById("f-tasks").value="";
+    document.getElementById("f-contact").value="";
+    var thumb3 = document.getElementById("photo-thumb");
+    thumb3.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>';
+  }
+  updatePhotoZoneText();
+  document.getElementById("overlay").classList.add("open");
+  document.body.style.overflow="hidden";
+  updatePreview();
+}
+function closeModal(){ document.getElementById("overlay").classList.remove("open"); document.body.style.overflow=""; }
+
+function getLines(id){ return document.getElementById(id).value.split("\n").map(function(l){return l.trim();}).filter(Boolean); }
+
+function updatePreview(){
   var c = {
-    name: document.getElementById("f-name").value.trim() || t("defName"),
-    photo: document.getElementById("f-photo").value.trim(),
-    department: document.getElementById("f-dept").value.trim() || "Team",
+    name: document.getElementById("f-name").value.trim()||t("defName"),
+    photo: currentPhoto,
+    department: document.getElementById("f-dept").value.trim()||"Team",
     aufgaben: getLines("f-tasks"),
     ansprechpartner_fuer: getLines("f-contact")
   };
   document.getElementById("card-preview").innerHTML = buildCard(c);
-  document.getElementById("json-out").textContent = JSON.stringify({ name: c.name, photo: c.photo, department: c.department, aufgaben: c.aufgaben, ansprechpartner_fuer: c.ansprechpartner_fuer }, null, 2);
+  var jsonData = {name:c.name,photo:c.photo,department:c.department,aufgaben:c.aufgaben,ansprechpartner_fuer:c.ansprechpartner_fuer};
+  document.getElementById("json-out").textContent = JSON.stringify(jsonData,null,2);
   document.getElementById("copy-btn").textContent = t("copyBtn");
   document.getElementById("copy-btn").classList.remove("copied");
 }
-function copyJson() {
-  navigator.clipboard.writeText(document.getElementById("json-out").textContent).then(function() {
+
+function copyJson(){
+  navigator.clipboard.writeText(document.getElementById("json-out").textContent).then(function(){
     var btn = document.getElementById("copy-btn");
-    btn.textContent = t("copied");
-    btn.classList.add("copied");
-    setTimeout(function() { btn.textContent = t("copyBtn"); btn.classList.remove("copied"); }, 2000);
+    btn.textContent = t("copied"); btn.classList.add("copied");
+    setTimeout(function(){btn.textContent=t("copyBtn");btn.classList.remove("copied");},2000);
   });
 }
-document.addEventListener("error", function(e) {
-  if (e.target && e.target.className === "avatar") {
-    var d = document.createElement("div");
-    d.className = "avatar-ph";
-    d.textContent = ini(e.target.alt || "");
-    if (e.target.parentNode) e.target.parentNode.replaceChild(d, e.target);
+
+document.addEventListener("error",function(e){
+  if(e.target&&e.target.className==="avatar"){
+    var d=document.createElement("div"); d.className="avatar-ph"; d.textContent=ini(e.target.alt||"");
+    if(e.target.parentNode) e.target.parentNode.replaceChild(d,e.target);
   }
-}, true);
+},true);
+
 loadCards();
 updatePreview();
 </script>
