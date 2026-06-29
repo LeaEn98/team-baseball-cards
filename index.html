@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>SECJUR — Team Baseball Cards</title>
 <style>
-:root{--navy:#0f1f3d;--pink:#e8005a;--violet:#6b2d8b;--light:#f4f6fa;--white:#fff;--text:#1a1a2e;--muted:#6b7280;--border:#e5e7eb;--r:14px}
+:root{--navy:#0f1f3d;--pink:#e8005a;--violet:#6b2d8b;--light:#f4f6fa;--white:#fff;--text:#1a1a2e;--muted:#6b7280;--border:#e5e7eb;--r:14px;--green:#059669;--red:#dc2626}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--light);color:var(--text);min-height:100vh}
 header{background:var(--navy);padding:2.25rem 2rem 1.75rem;text-align:center;position:relative;overflow:hidden}
@@ -13,8 +13,10 @@ header::before{content:'';position:absolute;inset:0;background:radial-gradient(e
 header h1{color:#fff;font-size:1.9rem;font-weight:800;letter-spacing:-.5px;position:relative}
 .brand{color:var(--pink)}
 header p{color:rgba(255,255,255,.55);margin-top:.35rem;font-size:.92rem;position:relative}
-.lang-btn{position:absolute;top:1.1rem;right:1.25rem;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:.78rem;font-weight:700;padding:.3rem .75rem;border-radius:20px;cursor:pointer;z-index:10}
-.lang-btn:hover{background:rgba(255,255,255,.22)}
+.header-btns{position:absolute;top:1.1rem;right:1.25rem;display:flex;gap:.5rem;z-index:10}
+.hbtn{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:.78rem;font-weight:700;padding:.3rem .75rem;border-radius:20px;cursor:pointer;transition:background .15s}
+.hbtn:hover{background:rgba(255,255,255,.22)}
+.hbtn.ok{border-color:rgba(16,185,129,.5);color:#6ee7b7}
 .toolbar{display:flex;gap:.75rem;align-items:center;justify-content:center;flex-wrap:wrap;padding:1.4rem 1.5rem .5rem;max-width:1400px;margin:0 auto}
 .search-wrap{position:relative;flex:1;max-width:340px}
 .search-wrap svg{position:absolute;left:.75rem;top:50%;transform:translateY(-50%);opacity:.4;pointer-events:none}
@@ -35,20 +37,22 @@ header p{color:rgba(255,255,255,.55);margin-top:.35rem;font-size:.92rem;position
 .tags{display:flex;flex-wrap:wrap;gap:.3rem}
 .tag{background:var(--light);border:1px solid var(--border);border-radius:6px;font-size:.78rem;padding:.18rem .5rem}
 .tag.hl{background:color-mix(in srgb,var(--pink) 9%,transparent);border-color:color-mix(in srgb,var(--pink) 28%,transparent);color:var(--pink);font-weight:600}
-.card-footer{padding:.7rem 1.25rem;border-top:1px solid var(--border);display:flex;justify-content:flex-end}
-.edit-btn{background:none;border:1.5px solid var(--border);color:var(--muted);font-size:.75rem;font-weight:600;padding:.28rem .7rem;border-radius:7px;cursor:pointer;display:flex;align-items:center;gap:.35rem;transition:all .15s}
-.edit-btn:hover{border-color:var(--violet);color:var(--violet);background:color-mix(in srgb,var(--violet) 6%,transparent)}
-.edit-btn svg{width:12px;height:12px}
+.card-footer{padding:.6rem 1rem;border-top:1px solid var(--border);display:flex;gap:.5rem;justify-content:flex-end}
+.card-btn{background:none;border:1.5px solid var(--border);color:var(--muted);font-size:.75rem;font-weight:600;padding:.25rem .6rem;border-radius:7px;cursor:pointer;display:flex;align-items:center;gap:.3rem;transition:all .15s}
+.card-btn svg{width:12px;height:12px}
+.card-btn.edit:hover{border-color:var(--violet);color:var(--violet);background:color-mix(in srgb,var(--violet) 6%,transparent)}
+.card-btn.del:hover{border-color:var(--red);color:var(--red);background:color-mix(in srgb,var(--red) 6%,transparent)}
 .state{grid-column:1/-1;text-align:center;padding:4rem 1rem;color:var(--muted)}
 .fab{position:fixed;bottom:2rem;right:2rem;z-index:100;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--pink),var(--violet));color:#fff;font-size:1.8rem;border:none;cursor:pointer;box-shadow:0 4px 18px rgba(232,0,90,.45);display:flex;align-items:center;justify-content:center;transition:transform .15s}
 .fab:hover{transform:scale(1.08)}
 .overlay{position:fixed;inset:0;background:rgba(10,15,30,.55);backdrop-filter:blur(3px);display:none;align-items:flex-start;justify-content:center;z-index:200;padding:1.5rem 1rem;overflow-y:auto}
 .overlay.open{display:flex}
+/* Edit modal */
 .modal{background:var(--white);border-radius:20px;width:100%;max-width:860px;box-shadow:0 20px 60px rgba(0,0,0,.25);overflow:hidden}
 .modal-header{background:var(--navy);padding:1.2rem 1.5rem;display:flex;align-items:center;justify-content:space-between}
 .modal-header h2{color:#fff;font-size:1.05rem;font-weight:700}
 .modal-header h2 span{color:var(--pink)}
-.close-btn{background:rgba(255,255,255,.12);border:none;color:#fff;width:32px;height:32px;border-radius:50%;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.close-btn{background:rgba(255,255,255,.12);border:none;color:#fff;width:32px;height:32px;border-radius:50%;font-size:1.1rem;cursor:pointer}
 .modal-body{display:grid;grid-template-columns:1fr 1fr}
 @media(max-width:620px){.modal-body{grid-template-columns:1fr}}
 .form-side{padding:1.5rem;border-right:1px solid var(--border)}
@@ -61,28 +65,50 @@ header p{color:rgba(255,255,255,.55);margin-top:.35rem;font-size:.92rem;position
 .photo-zone:hover,.photo-zone.drag-over{border-color:var(--violet);background:color-mix(in srgb,var(--violet) 5%,transparent)}
 .photo-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
 .photo-zone-inner{display:flex;align-items:center;gap:.65rem;pointer-events:none}
-.photo-zone-thumb{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--violet));display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
-.photo-zone-thumb img{width:100%;height:100%;object-fit:cover}
-.photo-zone-thumb svg{width:16px;height:16px;opacity:.7}
+.photo-thumb{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--violet));display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
+.photo-thumb img{width:100%;height:100%;object-fit:cover}
+.photo-thumb svg{width:16px;height:16px;opacity:.7}
 .photo-zone-text strong{display:block;font-size:.8rem;color:var(--text)}
 .photo-zone-text span{font-size:.7rem;color:var(--muted)}
 .photo-clear{position:absolute;top:.3rem;right:.3rem;background:rgba(232,0,90,.12);border:none;color:var(--pink);width:18px;height:18px;border-radius:50%;font-size:.7rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:2;pointer-events:all}
-.photo-clear.visible{display:flex}
-.save-area{padding:1rem 1.5rem;border-top:1px solid var(--border);display:flex;align-items:center;gap:.75rem}
-.save-btn{flex:1;background:linear-gradient(135deg,var(--pink),var(--violet));color:#fff;border:none;border-radius:10px;padding:.65rem 1.25rem;font-size:.9rem;font-weight:700;cursor:pointer;transition:opacity .15s,background .2s;display:flex;align-items:center;justify-content:center;gap:.5rem}
+.photo-clear.on{display:flex}
+/* Token banner */
+.token-banner{background:color-mix(in srgb,var(--violet) 8%,transparent);border-top:1px solid color-mix(in srgb,var(--violet) 20%,transparent);padding:.85rem 1.5rem;display:none;gap:.75rem;align-items:flex-start;flex-direction:column}
+.token-banner.show{display:flex}
+.token-banner p{font-size:.8rem;color:var(--text);line-height:1.5}
+.token-banner p a{color:var(--violet);font-weight:600}
+.token-banner-row{display:flex;gap:.5rem;width:100%}
+.token-banner input{flex:1;border:1.5px solid var(--border);border-radius:8px;padding:.45rem .7rem;font-size:.85rem;font-family:monospace;outline:none}
+.token-banner input:focus{border-color:var(--violet)}
+.token-save-btn{background:linear-gradient(135deg,var(--pink),var(--violet));color:#fff;border:none;border-radius:8px;padding:.45rem .9rem;font-size:.83rem;font-weight:700;cursor:pointer;white-space:nowrap}
+/* Save area */
+.save-area{padding:.9rem 1.5rem;border-top:1px solid var(--border);display:flex;align-items:center;gap:.75rem}
+.save-btn{flex:1;background:linear-gradient(135deg,var(--pink),var(--violet));color:#fff;border:none;border-radius:10px;padding:.65rem 1.25rem;font-size:.9rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.5rem;transition:opacity .15s,background .2s}
 .save-btn:hover{opacity:.9}
 .save-btn:disabled{opacity:.5;cursor:not-allowed}
-.save-btn.success{background:linear-gradient(135deg,#059669,#10b981)}
-.save-btn.error{background:linear-gradient(135deg,#dc2626,#ef4444)}
-.save-status{font-size:.78rem;color:var(--muted);flex-shrink:0;max-width:200px;text-align:right;line-height:1.3}
+.save-btn.ok{background:linear-gradient(135deg,#059669,#10b981)}
+.save-btn.err{background:linear-gradient(135deg,var(--red),#ef4444)}
+.save-status{font-size:.75rem;color:var(--muted);max-width:180px;text-align:right;line-height:1.35}
+/* Preview side */
 .preview-side{padding:1.5rem;background:var(--light);display:flex;flex-direction:column;gap:.9rem}
 .preview-side h3{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted)}
+/* Delete confirm modal */
+.confirm-modal{background:var(--white);border-radius:16px;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,.3);padding:2rem;text-align:center}
+.confirm-modal h3{font-size:1.05rem;font-weight:800;margin-bottom:.5rem}
+.confirm-modal p{font-size:.88rem;color:var(--muted);margin-bottom:1.5rem;line-height:1.5}
+.confirm-btns{display:flex;gap:.75rem}
+.confirm-del{flex:1;background:linear-gradient(135deg,var(--red),#ef4444);color:#fff;border:none;border-radius:9px;padding:.65rem;font-size:.9rem;font-weight:700;cursor:pointer}
+.confirm-del:disabled{opacity:.5;cursor:not-allowed}
+.confirm-cancel{flex:1;background:none;border:1.5px solid var(--border);color:var(--muted);border-radius:9px;padding:.65rem;font-size:.9rem;cursor:pointer}
 footer{text-align:center;padding:1.5rem;color:var(--muted);font-size:.8rem}
 </style>
 </head>
 <body>
 <header>
-  <button class="lang-btn" onclick="toggleLang()" id="lang-btn">EN</button>
+  <div class="header-btns">
+    <button class="hbtn" id="tok-btn" onclick="toggleTokenBanner()">&#x1F511;</button>
+    <button class="hbtn" id="lang-btn" onclick="toggleLang()">EN</button>
+  </div>
   <h1><span class="brand">SECJUR</span> &#8212; <span id="h-title">Mitarbeiter Baseball Cards</span></h1>
   <p id="h-sub">Wer macht was? Alle Kolleginnen und Kollegen auf einen Blick.</p>
 </header>
@@ -96,6 +122,7 @@ footer{text-align:center;padding:1.5rem;color:var(--muted);font-size:.8rem}
 <footer id="footer-hint">Klicke auf <strong>+</strong> um deine eigene Card hinzuzuf&#252;gen.</footer>
 <button class="fab" onclick="openModal(null)">+</button>
 
+<!-- Edit modal -->
 <div class="overlay" id="overlay" onclick="if(event.target===this)closeModal()">
   <div class="modal">
     <div class="modal-header">
@@ -112,12 +139,12 @@ footer{text-align:center;padding:1.5rem;color:var(--muted);font-size:.8rem}
             <input type="file" accept="image/*" onchange="photoFileChange(event)" id="photo-file-input"/>
             <button class="photo-clear" id="photo-clear" onclick="photoClear(event)">&#x2715;</button>
             <div class="photo-zone-inner">
-              <div class="photo-zone-thumb" id="photo-thumb">
+              <div class="photo-thumb" id="photo-thumb">
                 <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
               </div>
               <div class="photo-zone-text">
-                <strong id="photo-zone-main">Foto ablegen oder klicken</strong>
-                <span id="photo-zone-sub">JPG, PNG, WEBP &bull; wird verkleinert</span>
+                <strong id="pz-main">Foto ablegen oder klicken</strong>
+                <span id="pz-sub">JPG, PNG, WEBP &bull; wird verkleinert</span>
               </div>
             </div>
           </div>
@@ -131,6 +158,14 @@ footer{text-align:center;padding:1.5rem;color:var(--muted);font-size:.8rem}
         <div id="card-preview"></div>
       </div>
     </div>
+    <!-- Token banner (shown when no token set) -->
+    <div class="token-banner" id="token-banner">
+      <p id="tok-desc">Zum Speichern wird einmalig ein GitHub Token ben&#246;tigt. Token erstellen unter <a href="https://github.com/settings/tokens/new?scopes=repo&description=Baseball+Cards" target="_blank">github.com/settings/tokens</a> (Scope: <strong>repo</strong>) &#8594; hier einf&#252;gen &#8594; nie wieder gefragt.</p>
+      <div class="token-banner-row">
+        <input type="password" id="tok-input" placeholder="github_pat_..." autocomplete="off"/>
+        <button class="token-save-btn" onclick="saveToken()">Speichern &amp; weiter</button>
+      </div>
+    </div>
     <div class="save-area">
       <button class="save-btn" id="save-btn" onclick="saveCard()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
@@ -141,11 +176,29 @@ footer{text-align:center;padding:1.5rem;color:var(--muted);font-size:.8rem}
   </div>
 </div>
 
+<!-- Delete confirm modal -->
+<div class="overlay" id="del-overlay" onclick="if(event.target===this)closeDelModal()">
+  <div class="confirm-modal">
+    <h3 id="del-title">Card l&#246;schen?</h3>
+    <p id="del-desc">Diese Aktion kann nicht r&#252;ckg&#228;ngig gemacht werden.</p>
+    <div class="confirm-btns">
+      <button class="confirm-del" id="del-confirm-btn" onclick="confirmDelete()">L&#246;schen</button>
+      <button class="confirm-cancel" onclick="closeDelModal()">Abbrechen</button>
+    </div>
+  </div>
+</div>
+
 <script>
+var REPO = "LeaEn98/team-baseball-cards";
+var FILE = "people/cards.json";
+var API  = "https://api.github.com/repos/"+REPO+"/contents/"+FILE;
+var TKEY = "gh_tok_bc";
+
 var lang = "de";
 var isEditMode = false;
 var editOriginalName = null;
 var currentPhoto = "";
+var deleteTargetName = null;
 
 var L = {
   de:{
@@ -154,15 +207,16 @@ var L = {
     mTitleNew:"Deine <span>Baseball Card</span> erstellen", mTitleEdit:"Card <span>bearbeiten</span>",
     fTitleNew:"Deine Daten", fTitleEdit:"Daten bearbeiten",
     lName:"Name *", lPhoto:"Foto", lDept:"Team / Department *", lTasks:"Aufgaben *", lContact:"Ansprechpartner für *",
-    phName:"Vorname Nachname", phDept:"z.B. Customer Success",
-    phTasks:"Eine Aufgabe pro Zeile", phContact:"Ein Thema pro Zeile",
-    photoMain:"Foto ablegen oder klicken", photoSub:"JPG, PNG, WEBP · wird verkleinert",
-    photoLoaded:"Foto geladen", photoLoadedSub:"Klicken zum Ändern",
+    phName:"Vorname Nachname", phDept:"z.B. Customer Success", phTasks:"Eine Aufgabe pro Zeile", phContact:"Ein Thema pro Zeile",
+    pzMain:"Foto ablegen oder klicken", pzSub:"JPG, PNG, WEBP · wird verkleinert",
+    pzLoaded:"Foto geladen", pzLoadedSub:"Klicken zum Ändern",
     prevTitle:"Vorschau",
-    saveBtn:"Speichern", saving:"Wird gespeichert…", saved:"Gespeichert ✓", saveErr:"Fehler — bitte erneut versuchen",
-    editBtn:"Bearbeiten", secTasks:"Aufgaben", secContact:"Ansprechpartner für",
-    empty:"Keine Ergebnisse.", defName:"Dein Name",
-    errRequired:"Name und Department sind Pflichtfelder."
+    saveBtn:"Speichern", saving:"Wird gespeichert…", saved:"Gespeichert ✓", saveErr:"Fehler beim Speichern",
+    editBtn:"Bearbeiten", delBtn:"Löschen",
+    secTasks:"Aufgaben", secContact:"Ansprechpartner für",
+    empty:"Keine Ergebnisse.", defName:"Dein Name", errReq:"Name und Department sind Pflichtfelder.",
+    delTitle:"Card löschen?", delDesc:"Diese Aktion kann nicht rückgängig gemacht werden.",
+    delConfirm:"Löschen", delCancel:"Abbrechen", deleting:"Wird gelöscht…", deleted:"Gelöscht ✓"
   },
   en:{
     title:"Team Baseball Cards", sub:"Who does what? All colleagues at a glance.",
@@ -170,18 +224,19 @@ var L = {
     mTitleNew:"Create your <span>Baseball Card</span>", mTitleEdit:"Edit <span>Card</span>",
     fTitleNew:"Your Details", fTitleEdit:"Edit Details",
     lName:"Name *", lPhoto:"Photo", lDept:"Team / Department *", lTasks:"Responsibilities *", lContact:"Go-to person for *",
-    phName:"First Last", phDept:"e.g. Customer Success",
-    phTasks:"One item per line", phContact:"One topic per line",
-    photoMain:"Drop photo or click", photoSub:"JPG, PNG, WEBP · auto-resized",
-    photoLoaded:"Photo loaded", photoLoadedSub:"Click to change",
+    phName:"First Last", phDept:"e.g. Customer Success", phTasks:"One item per line", phContact:"One topic per line",
+    pzMain:"Drop photo or click", pzSub:"JPG, PNG, WEBP · auto-resized",
+    pzLoaded:"Photo loaded", pzLoadedSub:"Click to change",
     prevTitle:"Preview",
-    saveBtn:"Save", saving:"Saving…", saved:"Saved ✓", saveErr:"Error — please try again",
-    editBtn:"Edit", secTasks:"Responsibilities", secContact:"Go-to person for",
-    empty:"No results.", defName:"Your Name",
-    errRequired:"Name and Department are required."
+    saveBtn:"Save", saving:"Saving…", saved:"Saved ✓", saveErr:"Error saving",
+    editBtn:"Edit", delBtn:"Delete",
+    secTasks:"Responsibilities", secContact:"Go-to person for",
+    empty:"No results.", defName:"Your Name", errReq:"Name and Department are required.",
+    delTitle:"Delete card?", delDesc:"This cannot be undone.",
+    delConfirm:"Delete", delCancel:"Cancel", deleting:"Deleting…", deleted:"Deleted ✓"
   }
 };
-function t(k){ return L[lang][k]||k; }
+function t(k){return L[lang][k]||k;}
 
 function applyLang(){
   document.documentElement.lang=lang;
@@ -201,19 +256,43 @@ function applyLang(){
   document.getElementById("f-contact").placeholder=t("phContact");
   document.getElementById("preview-title").textContent=t("prevTitle");
   document.getElementById("save-btn-text").textContent=t("saveBtn");
-  updatePhotoZoneText();
+  document.getElementById("del-title").textContent=t("delTitle");
+  document.getElementById("del-desc").textContent=t("delDesc");
+  document.getElementById("del-confirm-btn").textContent=t("delConfirm");
+  updatePzText();
   setModalMode(isEditMode);
   filterCards(); updatePreview();
 }
-function toggleLang(){ lang=lang==="de"?"en":"de"; applyLang(); }
+function toggleLang(){lang=lang==="de"?"en":"de";applyLang();}
 function setModalMode(edit){
   isEditMode=edit;
   document.getElementById("modal-title").innerHTML=edit?t("mTitleEdit"):t("mTitleNew");
   document.getElementById("form-title").textContent=edit?t("fTitleEdit"):t("fTitleNew");
 }
 
+/* Token */
+function getToken(){return localStorage.getItem(TKEY)||"";}
+function updateTokBtn(){var b=document.getElementById("tok-btn");b.classList.toggle("ok",!!getToken());}
+function toggleTokenBanner(){
+  var b=document.getElementById("token-banner");
+  b.classList.toggle("show");
+  if(b.classList.contains("show")) document.getElementById("tok-input").value=getToken();
+}
+function saveToken(){
+  var v=document.getElementById("tok-input").value.trim();
+  if(v) localStorage.setItem(TKEY,v); else localStorage.removeItem(TKEY);
+  document.getElementById("token-banner").classList.remove("show");
+  updateTokBtn();
+  // retry save if we were waiting
+  saveCard();
+}
+function showTokenBannerIfNeeded(){
+  if(!getToken()) document.getElementById("token-banner").classList.add("show");
+  else document.getElementById("token-banner").classList.remove("show");
+}
+
 /* Photo */
-function resizeImage(file,cb){
+function resizeImg(file,cb){
   var r=new FileReader();
   r.onload=function(e){
     var img=new Image();
@@ -231,55 +310,57 @@ function resizeImage(file,cb){
 function setPhoto(url){
   currentPhoto=url;
   document.getElementById("photo-thumb").innerHTML="<img src='"+url+"' alt=''/>";
-  document.getElementById("photo-zone-main").textContent=t("photoLoaded");
-  document.getElementById("photo-zone-sub").textContent=t("photoLoadedSub");
-  document.getElementById("photo-clear").classList.add("visible");
+  document.getElementById("pz-main").textContent=t("pzLoaded");
+  document.getElementById("pz-sub").textContent=t("pzLoadedSub");
+  document.getElementById("photo-clear").classList.add("on");
   updatePreview();
 }
-function updatePhotoZoneText(){
-  document.getElementById("photo-zone-main").textContent=currentPhoto?t("photoLoaded"):t("photoMain");
-  document.getElementById("photo-zone-sub").textContent=currentPhoto?t("photoLoadedSub"):t("photoSub");
+function updatePzText(){
+  document.getElementById("pz-main").textContent=currentPhoto?t("pzLoaded"):t("pzMain");
+  document.getElementById("pz-sub").textContent=currentPhoto?t("pzLoadedSub"):t("pzSub");
 }
+var PERSON_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>';
 function photoDragOver(e){e.preventDefault();document.getElementById("photo-zone").classList.add("drag-over");}
 function photoDragLeave(){document.getElementById("photo-zone").classList.remove("drag-over");}
-function photoDrop(e){
-  e.preventDefault();document.getElementById("photo-zone").classList.remove("drag-over");
-  var f=e.dataTransfer.files[0];if(f&&f.type.startsWith("image/"))resizeImage(f,setPhoto);
-}
-function photoFileChange(e){var f=e.target.files[0];if(f)resizeImage(f,setPhoto);}
+function photoDrop(e){e.preventDefault();document.getElementById("photo-zone").classList.remove("drag-over");var f=e.dataTransfer.files[0];if(f&&f.type.startsWith("image/"))resizeImg(f,setPhoto);}
+function photoFileChange(e){var f=e.target.files[0];if(f)resizeImg(f,setPhoto);}
 function photoClear(e){
   e.stopPropagation();currentPhoto="";
-  document.getElementById("photo-thumb").innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>';
-  document.getElementById("photo-clear").classList.remove("visible");
+  document.getElementById("photo-thumb").innerHTML=PERSON_SVG;
+  document.getElementById("photo-clear").classList.remove("on");
   document.getElementById("photo-file-input").value="";
-  updatePhotoZoneText();updatePreview();
+  updatePzText();updatePreview();
 }
 
 /* Cards */
 var allCards=[];
 function loadCards(){
-  fetch("people/cards.json?t="+Date.now())
+  fetch(FILE+"?t="+Date.now())
     .then(function(r){if(!r.ok)throw 0;return r.json();})
-    .then(function(d){
-      allCards=d.sort(function(a,b){return a.name.localeCompare(b.name,"de");});
-      renderCards(allCards);
-    })
+    .then(function(d){allCards=d.sort(function(a,b){return a.name.localeCompare(b.name,"de");});renderCards(allCards);})
     .catch(function(){document.getElementById("grid").innerHTML="<div class='state'>Konnte cards.json nicht laden.</div>";});
 }
 function ini(n){return(n||"?").split(" ").map(function(p){return p[0];}).slice(0,2).join("").toUpperCase();}
 var PENCIL='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
+var TRASH='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>';
 function buildCard(c,idx){
   var ph="<div class='avatar-ph'>"+ini(c.name)+"</div>";
   var photo=c.photo?"<img class='avatar' src='"+c.photo+"' alt='"+(c.name||"")+"'/>":ph;
   var tasks=(c.aufgaben||[]).map(function(x){return"<span class='tag'>"+x+"</span>";}).join("");
   var contact=(c.ansprechpartner_fuer||[]).map(function(x){return"<span class='tag hl'>"+x+"</span>";}).join("");
-  var ec=idx!==undefined?"openModal(allCards["+idx+"])":"openModal(null)";
+  var footer="";
+  if(idx!==undefined){
+    footer="<div class='card-footer'>"+
+      "<button class='card-btn edit' onclick='openModal(allCards["+idx+"])'>"+PENCIL+"<span>"+t("editBtn")+"</span></button>"+
+      "<button class='card-btn del' onclick='openDelModal(allCards["+idx+"].name)'>"+TRASH+"<span>"+t("delBtn")+"</span></button>"+
+      "</div>";
+  }
   return"<div class='card'><div class='card-stripe'></div><div class='card-body'>"+
     "<div class='card-header'>"+photo+"<div class='card-name'><h2>"+(c.name||"—")+"</h2>"+
     "<span class='dept-badge'>"+(c.department||"")+"</span></div></div>"+
     (tasks?"<div><div class='sec-label'>"+t("secTasks")+"</div><div class='tags'>"+tasks+"</div></div>":"")+
     (contact?"<div><div class='sec-label'>"+t("secContact")+"</div><div class='tags'>"+contact+"</div></div>":"")+
-    "</div><div class='card-footer'><button class='edit-btn' onclick='"+ec+"'>"+PENCIL+"<span>"+t("editBtn")+"</span></button></div></div>";
+    "</div>"+footer+"</div>";
 }
 function renderCards(cards){
   var g=document.getElementById("grid");
@@ -295,23 +376,22 @@ function filterCards(){
 }
 
 function openModal(card){
-  var edit=!!card;setModalMode(edit);
-  editOriginalName=edit?card.name:null;
-  currentPhoto="";
-  document.getElementById("photo-clear").classList.remove("visible");
+  var edit=!!card; setModalMode(edit);
+  editOriginalName=edit?card.name:null; currentPhoto="";
+  document.getElementById("photo-clear").classList.remove("on");
   document.getElementById("photo-file-input").value="";
-  var ph=document.getElementById("photo-thumb");
-  ph.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>';
+  document.getElementById("photo-thumb").innerHTML=PERSON_SVG;
   if(edit){
     document.getElementById("f-name").value=card.name||"";
     document.getElementById("f-dept").value=card.department||"";
     document.getElementById("f-tasks").value=(card.aufgaben||[]).join("\n");
     document.getElementById("f-contact").value=(card.ansprechpartner_fuer||[]).join("\n");
-    if(card.photo){currentPhoto=card.photo;ph.innerHTML="<img src='"+card.photo+"' alt=''/>";document.getElementById("photo-clear").classList.add("visible");}
+    if(card.photo){currentPhoto=card.photo;document.getElementById("photo-thumb").innerHTML="<img src='"+card.photo+"' alt=''/>";document.getElementById("photo-clear").classList.add("on");}
   } else {
     ["f-name","f-dept","f-tasks","f-contact"].forEach(function(id){document.getElementById(id).value="";});
   }
-  updatePhotoZoneText();
+  updatePzText();
+  showTokenBannerIfNeeded();
   var b=document.getElementById("save-btn");b.className="save-btn";b.disabled=false;
   document.getElementById("save-btn-text").textContent=t("saveBtn");
   document.getElementById("save-status").textContent="";
@@ -321,6 +401,17 @@ function openModal(card){
 }
 function closeModal(){document.getElementById("overlay").classList.remove("open");document.body.style.overflow="";}
 
+/* Delete modal */
+function openDelModal(name){
+  deleteTargetName=name;
+  document.getElementById("del-desc").textContent='"'+name+'" — '+t("delDesc");
+  document.getElementById("del-confirm-btn").textContent=t("delConfirm");
+  document.getElementById("del-confirm-btn").disabled=false;
+  document.getElementById("del-overlay").classList.add("open");
+  document.body.style.overflow="hidden";
+}
+function closeDelModal(){document.getElementById("del-overlay").classList.remove("open");document.body.style.overflow="";}
+
 function getLines(id){return document.getElementById(id).value.split("\n").map(function(l){return l.trim();}).filter(Boolean);}
 function updatePreview(){
   var c={name:document.getElementById("f-name").value.trim()||t("defName"),photo:currentPhoto,
@@ -329,39 +420,83 @@ function updatePreview(){
   document.getElementById("card-preview").innerHTML=buildCard(c);
 }
 
+/* GitHub API helper */
+function ghFetch(token){
+  return fetch(API,{headers:{Authorization:"token "+token,Accept:"application/vnd.github.v3+json","User-Agent":"baseball-cards"}});
+}
+function ghPut(token,cards,sha,msg){
+  var content=btoa(unescape(encodeURIComponent(JSON.stringify(cards,null,2))));
+  return fetch(API,{method:"PUT",headers:{Authorization:"token "+token,Accept:"application/vnd.github.v3+json","Content-Type":"application/json","User-Agent":"baseball-cards"},
+    body:JSON.stringify({message:msg,content:content,sha:sha})});
+}
+function handleApiError(r,btn,btnText){
+  return r.json().then(function(e){
+    btn.className="save-btn err";btn.disabled=false;
+    document.getElementById("save-btn-text").textContent=btnText;
+    var msg=e.message||"HTTP "+r.status;
+    if(r.status===401||msg.toLowerCase().indexOf("bad cred")>-1){
+      document.getElementById("save-status").textContent="Token ungültig — bitte neu eingeben.";
+      localStorage.removeItem(TKEY); updateTokBtn();
+      showTokenBannerIfNeeded();
+    } else {
+      document.getElementById("save-status").textContent=msg.substring(0,70);
+    }
+  });
+}
+
 function saveCard(){
-  var c={
-    name:document.getElementById("f-name").value.trim(),
-    photo:currentPhoto,
+  var token=getToken();
+  if(!token){showTokenBannerIfNeeded();return;}
+  var c={name:document.getElementById("f-name").value.trim(),photo:currentPhoto,
     department:document.getElementById("f-dept").value.trim(),
-    aufgaben:getLines("f-tasks"),
-    ansprechpartner_fuer:getLines("f-contact")
-  };
-  if(!c.name||!c.department){
-    document.getElementById("save-status").textContent=t("errRequired");return;
-  }
+    aufgaben:getLines("f-tasks"),ansprechpartner_fuer:getLines("f-contact")};
+  if(!c.name||!c.department){document.getElementById("save-status").textContent=t("errReq");return;}
   var btn=document.getElementById("save-btn");
   btn.disabled=true;btn.className="save-btn";
   document.getElementById("save-btn-text").textContent=t("saving");
   document.getElementById("save-status").textContent="";
-
-  fetch("/.netlify/functions/save-cards",{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({card:c,originalName:editOriginalName,isEdit:isEditMode})
-  })
-  .then(function(r){return r.json().then(function(d){return{ok:r.ok,data:d};});})
-  .then(function(res){
-    if(!res.ok) throw new Error(res.data.error||"Unknown error");
-    btn.className="save-btn success";btn.disabled=false;
-    document.getElementById("save-btn-text").textContent=t("saved");
-    loadCards();
-    setTimeout(function(){closeModal();},1100);
-  })
-  .catch(function(e){
-    btn.className="save-btn error";btn.disabled=false;
+  ghFetch(token).then(function(r){
+    if(!r.ok) return handleApiError(r,btn,t("saveErr"));
+    return r.json().then(function(fd){
+      var sha=fd.sha;
+      var cur=JSON.parse(atob(fd.content.replace(/\n/g,"")));
+      if(isEditMode&&editOriginalName){var found=false;cur=cur.map(function(x){if(x.name===editOriginalName){found=true;return c;}return x;});if(!found)cur.push(c);}
+      else cur.push(c);
+      return ghPut(token,cur,sha,(isEditMode?"Update":"Add")+" card: "+c.name).then(function(r2){
+        if(!r2.ok) return handleApiError(r2,btn,t("saveErr"));
+        btn.className="save-btn ok";btn.disabled=false;
+        document.getElementById("save-btn-text").textContent=t("saved");
+        loadCards();setTimeout(function(){closeModal();},1100);
+      });
+    });
+  }).catch(function(e){
+    btn.className="save-btn err";btn.disabled=false;
     document.getElementById("save-btn-text").textContent=t("saveErr");
-    document.getElementById("save-status").textContent=String(e.message).substring(0,80);
+    document.getElementById("save-status").textContent=String(e).substring(0,60);
+  });
+}
+
+function confirmDelete(){
+  var token=getToken();
+  if(!token){closeDelModal();openModal(null);return;}
+  var btn=document.getElementById("del-confirm-btn");
+  btn.disabled=true;btn.textContent=t("deleting");
+  ghFetch(token).then(function(r){
+    if(!r.ok)throw new Error("HTTP "+r.status);
+    return r.json();
+  }).then(function(fd){
+    var sha=fd.sha;
+    var cur=JSON.parse(atob(fd.content.replace(/\n/g,"")));
+    cur=cur.filter(function(x){return x.name!==deleteTargetName;});
+    return ghPut(token,cur,sha,"Delete card: "+deleteTargetName);
+  }).then(function(r2){
+    if(!r2.ok)throw new Error("HTTP "+r2.status);
+    btn.textContent=t("deleted");
+    loadCards();
+    setTimeout(function(){closeDelModal();},900);
+  }).catch(function(e){
+    btn.disabled=false;btn.textContent=t("delConfirm");
+    document.getElementById("del-desc").textContent=String(e).substring(0,60);
   });
 }
 
@@ -372,7 +507,7 @@ document.addEventListener("error",function(e){
   }
 },true);
 
-loadCards();updatePreview();
+updateTokBtn(); loadCards(); updatePreview();
 </script>
 </body>
 </html>
